@@ -20,7 +20,7 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
  * This class is only used in ibator code generator.
  * </pre>
  */
-public class MySqlPaginationPlugin extends PluginAdapter {
+public class PostgreSQLPaginationPlugin extends PluginAdapter {
 	@Override
 	public boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable) {
@@ -33,16 +33,16 @@ public class MySqlPaginationPlugin extends PluginAdapter {
 	@Override
 	public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(
 			XmlElement element, IntrospectedTable introspectedTable) {
-		
-		XmlElement isNotNullElement = new XmlElement("if"); //$NON-NLS-1$ 
-        isNotNullElement.addAttribute(new Attribute("test", "limitStart >= 0")); //$NON-NLS-1$ //$NON-NLS-2$ 
-        isNotNullElement.addElement(new TextElement("limit ${limitStart} , ${limitEnd}")); 
+
+		XmlElement isNotNullElement = new XmlElement("if"); //$NON-NLS-1$
+        isNotNullElement.addAttribute(new Attribute("test", "limitStart >= 0")); //$NON-NLS-1$ //$NON-NLS-2$
+        isNotNullElement.addElement(new TextElement("limit ${limitStart} offset ${limitEnd}"));
         element.addElement(isNotNullElement);
-        return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element, introspectedTable); 
+        return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element, introspectedTable);
 	}
-	
-	
-	
+
+
+
 	private void addLimit(TopLevelClass topLevelClass,IntrospectedTable introspectedTable, String name) {
 		CommentGenerator commentGenerator = context.getCommentGenerator();
 		Field field = new Field();
@@ -70,7 +70,7 @@ public class MySqlPaginationPlugin extends PluginAdapter {
 		commentGenerator.addGeneralMethodComment(method, introspectedTable);
 		topLevelClass.addMethod(method);
 	}
-	
+
 	private void addLimitMethod(TopLevelClass topLevelClass,IntrospectedTable introspectedTable) {
 		CommentGenerator commentGenerator = context.getCommentGenerator();
 		Method method = new Method();
@@ -83,12 +83,12 @@ public class MySqlPaginationPlugin extends PluginAdapter {
 		commentGenerator.addGeneralMethodComment(method, introspectedTable);
 		topLevelClass.addMethod(method);
 	}
-	
+
 	/**
 	 * This plugin is always valid - no properties are required
 	 */
 	public boolean validate(List<String> warnings) {
 		return true;
 	}
-	
+
 }
