@@ -35,7 +35,7 @@ public class MySQLPaginationPlugin extends PluginAdapter {
 			XmlElement element, IntrospectedTable introspectedTable) {
 		
 		XmlElement isNotNullElement = new XmlElement("if"); //$NON-NLS-1$ 
-        isNotNullElement.addAttribute(new Attribute("test", "limitStart >= 0")); //$NON-NLS-1$ //$NON-NLS-2$ 
+        isNotNullElement.addAttribute(new Attribute("test", "limitStart !=null and limitStart >= 0")); //$NON-NLS-1$ //$NON-NLS-2$ 
         isNotNullElement.addElement(new TextElement("limit ${limitStart} , ${limitEnd}")); 
         element.addElement(isNotNullElement);
         return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element, introspectedTable); 
