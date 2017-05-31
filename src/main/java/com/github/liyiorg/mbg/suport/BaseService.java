@@ -2,6 +2,8 @@ package com.github.liyiorg.mbg.suport;
 
 import java.util.List;
 
+import com.github.liyiorg.mbg.bean.Page;
+
 public interface BaseService<Model, Example, PrimaryKey> {
 
 	int countByExample(Example example);
@@ -25,4 +27,6 @@ public interface BaseService<Model, Example, PrimaryKey> {
 	int updateByPrimaryKeySelective(Model record);
 
 	int updateByPrimaryKey(Model record);
+	
+	Page<Model> selectByExample(Example example,Integer page,Integer size);
 }

@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.commons.beanutils.MethodUtils;
 
+import com.github.liyiorg.mbg.bean.Page;
+
 public class BaseServiceImpl<Model, Example, PrimaryKey> implements BaseBLOBsService<Model, Example, PrimaryKey>{
 
 	protected Object mapper;
@@ -92,6 +94,34 @@ public class BaseServiceImpl<Model, Example, PrimaryKey> implements BaseBLOBsSer
 	@Override
 	public int updateByPrimaryKey(Model record) {
 		return invokeExactMethod("updateByPrimaryKey", record);
+	}
+
+	@Override
+	public Page<Model> selectByExample(Example example, Integer page, Integer size) {
+		if(example instanceof LimitInterface){
+			LimitInterface temp = (LimitInterface)example;
+			temp.setLimitStart((page-1)*size);
+			temp.setLimitEnd(page*size);
+			List<Model> list = selectByExample(example);
+			temp.setLimitStart(null);
+			int count = countByExample(example);
+			return new Page<>(list, count, page, size);
+		}
+		return null;
+	}
+
+	@Override
+	public Page<Model> selectByExampleWithBLOBs(Example example, Integer page, Integer size) {
+		if(example instanceof LimitInterface){
+			LimitInterface temp = (LimitInterface)example;
+			temp.setLimitStart((page-1)*size);
+			temp.setLimitEnd(page*size);
+			List<Model> list = selectByExampleWithBLOBs(example);
+			temp.setLimitStart(null);
+			int count = countByExample(example);
+			return new Page<>(list, count, page, size);
+		}
+		return null;
 	}
 
 	
