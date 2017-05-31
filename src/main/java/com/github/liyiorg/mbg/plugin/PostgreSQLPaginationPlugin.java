@@ -3,9 +3,9 @@ package com.github.liyiorg.mbg.plugin;
 import java.util.List;
 
 import org.mybatis.generator.api.CommentGenerator;
+import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
@@ -14,6 +14,8 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
+
+import com.github.liyiorg.mbg.util.TopLevelClassUtil;
 /**
  * <pre>
  * add pagination using mysql limit.
@@ -22,55 +24,22 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
  */
 public class PostgreSQLPaginationPlugin extends PluginAdapter {
 	@Override
+	public void initialized(IntrospectedTable introspectedTable) {
+		//添加接口
+		properties.setProperty(ExampleSuperPlugin.EXAMPLE_SUPER_INTERFACES, "com.github.liyiorg.mbg.suport.LimitInterface");
+		super.initialized(introspectedTable);
+	}
+
+	@Override
 	public boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable) {
 		// add field, getter, setter for limit clause
-		addLimit(topLevelClass, introspectedTable, "limitStart");
-		addLimit(topLevelClass, introspectedTable, "limitEnd");
+		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable,new FullyQualifiedJavaType(Integer.class.getName()),"limitStart",null);
+		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable,new FullyQualifiedJavaType(Integer.class.getName()), "limitEnd",null);
 		addLimitMethod(topLevelClass, introspectedTable);
 		return super.modelExampleClassGenerated(topLevelClass,introspectedTable);
 	}
-	@Override
-	public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(
-			XmlElement element, IntrospectedTable introspectedTable) {
-
-		XmlElement isNotNullElement = new XmlElement("if"); //$NON-NLS-1$
-        isNotNullElement.addAttribute(new Attribute("test", "limitStart >= 0")); //$NON-NLS-1$ //$NON-NLS-2$
-        isNotNullElement.addElement(new TextElement("limit ${limitStart} offset ${limitEnd}"));
-        element.addElement(isNotNullElement);
-        return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element, introspectedTable);
-	}
-
-
-
-	private void addLimit(TopLevelClass topLevelClass,IntrospectedTable introspectedTable, String name) {
-		CommentGenerator commentGenerator = context.getCommentGenerator();
-		Field field = new Field();
-		field.setVisibility(JavaVisibility.PROTECTED);
-		field.setType(FullyQualifiedJavaType.getIntInstance());
-		field.setName(name);
-		field.setInitializationString("-1");
-		commentGenerator.addFieldComment(field, introspectedTable);
-		topLevelClass.addField(field);
-		char c = name.charAt(0);
-		String camel = Character.toUpperCase(c) + name.substring(1);
-		Method method = new Method();
-		method.setVisibility(JavaVisibility.PUBLIC);
-		method.setName("set" + camel);
-		method.addParameter(new Parameter(FullyQualifiedJavaType
-				.getIntInstance(), name));
-		method.addBodyLine("this." + name + "=" + name + ";");
-		commentGenerator.addGeneralMethodComment(method, introspectedTable);
-		topLevelClass.addMethod(method);
-		method = new Method();
-		method.setVisibility(JavaVisibility.PUBLIC);
-		method.setReturnType(FullyQualifiedJavaType.getIntInstance());
-		method.setName("get" + camel);
-		method.addBodyLine("return " + name + ";");
-		commentGenerator.addGeneralMethodComment(method, introspectedTable);
-		topLevelClass.addMethod(method);
-	}
-
+	
 	private void addLimitMethod(TopLevelClass topLevelClass,IntrospectedTable introspectedTable) {
 		CommentGenerator commentGenerator = context.getCommentGenerator();
 		Method method = new Method();
@@ -83,12 +52,37 @@ public class PostgreSQLPaginationPlugin extends PluginAdapter {
 		commentGenerator.addGeneralMethodComment(method, introspectedTable);
 		topLevelClass.addMethod(method);
 	}
-
+	
+	
+	@Override
+	public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(
+			XmlElement element, IntrospectedTable introspectedTable) {
+		
+		XmlElement isNotNullElement = new XmlElement("if"); //$NON-NLS-1$ 
+        isNotNullElement.addAttribute(new Attribute("test", "limitStart != null")); //$NON-NLS-1$ //$NON-NLS-2$ 
+        isNotNullElement.addElement(new TextElement("limit ${limitStart} offset ${limitEnd}")); 
+        element.addElement(isNotNullElement);
+        return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element, introspectedTable); 
+	}
+	
+	@Override
+	public boolean sqlMapSelectByExampleWithBLOBsElementGenerated(XmlElement element,
+			IntrospectedTable introspectedTable) {
+		List<IntrospectedColumn> list = introspectedTable.getBLOBColumns();
+		if(list != null && list.size()>0){
+			XmlElement isNotNullElement = new XmlElement("if"); //$NON-NLS-1$ 
+	        isNotNullElement.addAttribute(new Attribute("test", "limitStart != null")); //$NON-NLS-1$ //$NON-NLS-2$ 
+	        isNotNullElement.addElement(new TextElement("limit ${limitStart} offset ${limitEnd}")); 
+	        element.addElement(isNotNullElement);
+		}
+		return super.sqlMapSelectByExampleWithBLOBsElementGenerated(element, introspectedTable);
+	}
+	
 	/**
 	 * This plugin is always valid - no properties are required
 	 */
 	public boolean validate(List<String> warnings) {
 		return true;
 	}
-
+	
 }
