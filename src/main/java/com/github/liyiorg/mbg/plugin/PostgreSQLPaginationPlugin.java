@@ -1,4 +1,4 @@
-package liyiorg.mybatis.generator.pagination;
+package com.github.liyiorg.mbg.plugin;
 
 import java.util.List;
 
