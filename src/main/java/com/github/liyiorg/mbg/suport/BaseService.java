@@ -6,7 +6,7 @@ import com.github.liyiorg.mbg.bean.Page;
 
 public interface BaseService<Model, Example, PrimaryKey> {
 
-	int countByExample(Example example);
+	long countByExample(Example example);
 
 	int deleteByExample(Example example);
 

@@ -2,11 +2,11 @@ package com.github.liyiorg.mbg.suport;
 
 public interface LimitInterface {
 
-    public void setLimitStart(Integer limitStart);
+    public void setLimitStart(Long limitStart);
 
-    public Integer getLimitStart();
+    public Long getLimitStart();
 
-    public void setLimitEnd(Integer limitEnd);
+    public void setLimitEnd(Long limitEnd);
 
-    public Integer getLimitEnd();
+    public Long getLimitEnd();
 }

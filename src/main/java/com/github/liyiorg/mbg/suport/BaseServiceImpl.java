@@ -26,7 +26,7 @@ public class BaseServiceImpl<Model, Example, PrimaryKey> implements BaseBLOBsSer
 	}
 	
 	@Override
-	public int countByExample(Example example) {
+	public long countByExample(Example example) {
 		return invokeExactMethod("countByExample",example);
 		
 	}
@@ -100,12 +100,12 @@ public class BaseServiceImpl<Model, Example, PrimaryKey> implements BaseBLOBsSer
 	public Page<Model> selectByExample(Example example, Integer page, Integer size) {
 		if(example instanceof LimitInterface){
 			LimitInterface temp = (LimitInterface)example;
-			temp.setLimitStart((page-1)*size);
-			temp.setLimitEnd(page*size);
+			temp.setLimitStart((long)(page-1)*size);
+			temp.setLimitEnd((long)page*size);
 			List<Model> list = selectByExample(example);
 			temp.setLimitStart(null);
-			int count = countByExample(example);
-			return new Page<>(list, count, page, size);
+			long count = countByExample(example);
+			return new Page<Model>(list, count, page, size);
 		}
 		return null;
 	}
@@ -114,12 +114,12 @@ public class BaseServiceImpl<Model, Example, PrimaryKey> implements BaseBLOBsSer
 	public Page<Model> selectByExampleWithBLOBs(Example example, Integer page, Integer size) {
 		if(example instanceof LimitInterface){
 			LimitInterface temp = (LimitInterface)example;
-			temp.setLimitStart((page-1)*size);
-			temp.setLimitEnd(page*size);
+			temp.setLimitStart((long)(page-1)*size);
+			temp.setLimitEnd((long)page*size);
 			List<Model> list = selectByExampleWithBLOBs(example);
 			temp.setLimitStart(null);
-			int count = countByExample(example);
-			return new Page<>(list, count, page, size);
+			long count = countByExample(example);
+			return new Page<Model>(list, count, page, size);
 		}
 		return null;
 	}

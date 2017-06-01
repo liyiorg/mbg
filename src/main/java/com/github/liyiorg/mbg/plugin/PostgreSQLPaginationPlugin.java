@@ -34,8 +34,8 @@ public class PostgreSQLPaginationPlugin extends PluginAdapter {
 	public boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable) {
 		// add field, getter, setter for limit clause
-		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable,new FullyQualifiedJavaType(Integer.class.getName()),"limitStart",null);
-		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable,new FullyQualifiedJavaType(Integer.class.getName()), "limitEnd",null);
+		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable,new FullyQualifiedJavaType(Long.class.getName()),"limitStart",null);
+		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable,new FullyQualifiedJavaType(Long.class.getName()), "limitEnd",null);
 		addLimitMethod(topLevelClass, introspectedTable);
 		return super.modelExampleClassGenerated(topLevelClass,introspectedTable);
 	}
@@ -45,8 +45,8 @@ public class PostgreSQLPaginationPlugin extends PluginAdapter {
 		Method method = new Method();
 		method.setVisibility(JavaVisibility.PUBLIC);
 		method.setName("limit");
-		method.addParameter(new Parameter(FullyQualifiedJavaType.getIntInstance(),"limitStart"));
-		method.addParameter(new Parameter(FullyQualifiedJavaType.getIntInstance(),"limitEnd"));
+		method.addParameter(new Parameter(new FullyQualifiedJavaType(Long.class.getName()),"limitStart"));
+		method.addParameter(new Parameter(new FullyQualifiedJavaType(Long.class.getName()),"limitEnd"));
 		method.addBodyLine("this.limitStart = limitStart;");
 		method.addBodyLine("this.limitEnd = limitEnd;");
 		commentGenerator.addGeneralMethodComment(method, introspectedTable);
