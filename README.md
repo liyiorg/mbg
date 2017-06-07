@@ -11,9 +11,9 @@ generatorConfiguration &gt; context
 pom.xml 
 ```xml
 <dependency>
-	<groupId>liyiorg.mybatis.generator</groupId>
-	<artifactId>mybatis-generator-pagination</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<groupId>com.github.liyiorg</groupId>
+	<artifactId>mbg</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 	<exclusions>
 		<exclusion>
 			<groupId>org.mybatis.generator</groupId>
@@ -41,9 +41,9 @@ pom.xml
 						<version>5.1.32</version>
 					</dependency>
 					<dependency>
-						<groupId>liyiorg.mybatis.generator</groupId>
-						<artifactId>mybatis-generator-pagination</artifactId>
-						<version>1.0.1-SNAPSHOT</version>
+						<groupId>com.github.liyiorg</groupId>
+						<artifactId>mbg</artifactId>
+						<version>1.0.0-SNAPSHOT</version>
 					</dependency>
 				</dependencies>
 			</plugin>
