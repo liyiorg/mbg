@@ -42,12 +42,12 @@ public class BaseServiceImpl<Model, Example, PrimaryKey> implements BaseBLOBsSer
 	}
 
 	@Override
-	public int insert(Example record) {
+	public int insert(Model record) {
 		return invokeExactMethod("insert",record);
 	}
 
 	@Override
-	public int insertSelective(Example record) {
+	public int insertSelective(Model record) {
 		return invokeExactMethod("insertSelective",record);
 	}
 

@@ -12,9 +12,9 @@ public interface BaseService<Model, Example, PrimaryKey> {
 
 	int deleteByPrimaryKey(PrimaryKey id);
 
-	int insert(Example record);
+	int insert(Model record);
 
-	int insertSelective(Example record);
+	int insertSelective(Model record);
 
 	List<Model> selectByExample(Example example);
 
