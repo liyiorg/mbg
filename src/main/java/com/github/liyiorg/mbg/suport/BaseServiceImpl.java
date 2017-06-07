@@ -3,9 +3,8 @@ package com.github.liyiorg.mbg.suport;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.apache.commons.beanutils.MethodUtils;
-
 import com.github.liyiorg.mbg.bean.Page;
+import com.github.liyiorg.mbg.util.MethodUtils;
 
 public abstract class BaseServiceImpl<Model, Example, PrimaryKey> implements BaseBLOBsService<Model, Example, PrimaryKey>{
 
