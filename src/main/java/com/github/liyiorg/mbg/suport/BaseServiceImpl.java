@@ -103,7 +103,9 @@ public class BaseServiceImpl<Model, Example, PrimaryKey> implements BaseBLOBsSer
 			temp.setLimitStart((long)(page-1)*size);
 			temp.setLimitEnd((long)page*size);
 			List<Model> list = selectByExample(example);
+			
 			temp.setLimitStart(null);
+			temp.setOrderByClause(null);
 			long count = countByExample(example);
 			return new Page<Model>(list, count, page, size);
 		}
@@ -117,7 +119,9 @@ public class BaseServiceImpl<Model, Example, PrimaryKey> implements BaseBLOBsSer
 			temp.setLimitStart((long)(page-1)*size);
 			temp.setLimitEnd((long)page*size);
 			List<Model> list = selectByExampleWithBLOBs(example);
+			
 			temp.setLimitStart(null);
+			temp.setOrderByClause(null);
 			long count = countByExample(example);
 			return new Page<Model>(list, count, page, size);
 		}

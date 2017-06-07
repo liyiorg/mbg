@@ -9,4 +9,8 @@ public interface LimitInterface {
     public void setLimitEnd(Long limitEnd);
 
     public Long getLimitEnd();
+    
+    public void setOrderByClause(String orderByClause);
+    
+    public String getOrderByClause();
 }
