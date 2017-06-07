@@ -1,9 +1,10 @@
-mybatis-generator-pagination
+MyBatis Generator Tool
 ============================
 XML Configuration
 generatorConfiguration &gt; context
 
 ```xml
+<!-- mybatis-generator-pagination plugins -->
 <plugin type="com.github.liyiorg.mbg.plugin.MySQLPaginationPlugin"></plugin>
 <plugin type="com.github.liyiorg.mbg.plugin.PostgreSQLPaginationPlugin"></plugin>
 ```
