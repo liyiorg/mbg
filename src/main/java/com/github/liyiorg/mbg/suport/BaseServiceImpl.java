@@ -7,7 +7,7 @@ import org.apache.commons.beanutils.MethodUtils;
 
 import com.github.liyiorg.mbg.bean.Page;
 
-public class BaseServiceImpl<Model, Example, PrimaryKey> implements BaseBLOBsService<Model, Example, PrimaryKey>{
+public abstract class BaseServiceImpl<Model, Example, PrimaryKey> implements BaseBLOBsService<Model, Example, PrimaryKey>{
 
 	protected Object mapper;
 	
@@ -27,12 +27,18 @@ public class BaseServiceImpl<Model, Example, PrimaryKey> implements BaseBLOBsSer
 	
 	@Override
 	public long countByExample(Example example) {
+		if(example == null){
+			return invokeExactMethod("countByExample");
+		}
 		return invokeExactMethod("countByExample",example);
 		
 	}
 
 	@Override
 	public int deleteByExample(Example example) {
+		if(example == null){
+			return invokeExactMethod("deleteByExample");
+		}
 		return invokeExactMethod("deleteByExample",example);
 	}
 
@@ -53,11 +59,17 @@ public class BaseServiceImpl<Model, Example, PrimaryKey> implements BaseBLOBsSer
 
 	@Override
 	public List<Model> selectByExampleWithBLOBs(Example example) {
+		if(example == null){
+			return invokeExactMethod("selectByExampleWithBLOBs");
+		}
 		return invokeExactMethod("selectByExampleWithBLOBs",example);
 	}
 
 	@Override
 	public List<Model> selectByExample(Example example) {
+		if(example == null){
+			return invokeExactMethod("selectByExample");
+		}
 		return invokeExactMethod("selectByExample",example);
 	}
 
