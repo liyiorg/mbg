@@ -111,31 +111,46 @@ public abstract class BaseServiceImpl<Model, Example, PrimaryKey>
 	public int updateByPrimaryKey(Model record) {
 		return invokeExactMethod("updateByPrimaryKey", record, modelClass);
 	}
-
+	
 	@Override
 	public Page<Model> selectByExample(Example example, Integer page, Integer size) {
-		if (example instanceof LimitInterface) {
-			LimitInterface temp = (LimitInterface) example;
-			temp.setLimitStart((long) (page - 1) * size);
-			temp.setLimitEnd((long) page * size);
-			List<Model> list = selectByExample(example);
-
-			temp.setLimitStart(null);
-			temp.setOrderByClause(null);
-			long count = countByExample(example);
-			return new Page<Model>(list, count, page, size);
-		}
-		return null;
+		return selectByExampleChooes(example, page, size, false);
 	}
 
 	@Override
 	public Page<Model> selectByExampleWithBLOBs(Example example, Integer page, Integer size) {
+		return selectByExampleChooes(example, page, size, true);
+	}
+	
+	/**
+	 * 分页查询
+	 * @param example	example可以为空
+	 * @param page	页码
+	 * @param size	每页条数
+	 * @param blobs	是否为blobs 查找
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private Page<Model> selectByExampleChooes(Example example, Integer page, Integer size,boolean blobs) {
+		if(example == null){
+			try {
+				example = (Example)exampleClass.newInstance();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
 		if (example instanceof LimitInterface) {
 			LimitInterface temp = (LimitInterface) example;
 			temp.setLimitStart((long) (page - 1) * size);
 			temp.setLimitEnd((long) page * size);
-			List<Model> list = selectByExampleWithBLOBs(example);
-
+			List<Model> list;
+			if(blobs){
+				list = selectByExampleWithBLOBs(example);
+			}else{
+				list = selectByExample(example);
+			}
 			temp.setLimitStart(null);
 			temp.setOrderByClause(null);
 			long count = countByExample(example);
