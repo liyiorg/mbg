@@ -26,13 +26,19 @@ public class ServiceGeneratorPlugin extends PluginAdapter {
 	private static String ExampleClass = "com.github.liyiorg.mbg.suport.LimitInterface";
 
 	private boolean spring = true;
+	
+	private String servicePackage;
 
 	@Override
 	public void initialized(IntrospectedTable introspectedTable) {
 		super.initialized(introspectedTable);
-		Object obj = properties.get("spring");
-		if(obj != null){
-			spring = Boolean.valueOf(obj.toString());
+		Object pro_spring = properties.get("spring");
+		if(pro_spring != null){
+			spring = Boolean.valueOf(pro_spring.toString());
+		}
+		Object pro_servicePackage = properties.get("servicePackage");
+		if(pro_servicePackage != null){
+			servicePackage = pro_servicePackage.toString();
 		}
 	}
 
@@ -148,7 +154,7 @@ public class ServiceGeneratorPlugin extends PluginAdapter {
 			
 		}
 		stringBuilder.append("import ").append(baseRecordType).append(";").append(System.lineSeparator())
-					 .append("import ").append(mapperPackage(baseRecordType)).append(".").append(shortClassName(baseRecordType)).append("Mapper").append(";").append(System.lineSeparator())
+					 .append("import ").append(mapperPackage()).append(".").append(shortClassName(baseRecordType)).append("Mapper").append(";").append(System.lineSeparator())
 					 .append("import ").append(exampleType).append(";").append(System.lineSeparator());
 		
 			 if(!langPackage(primaryKeyType)){
@@ -210,14 +216,18 @@ public class ServiceGeneratorPlugin extends PluginAdapter {
 	 * @param baseRecordType baseRecordType
 	 * @return path
 	 */
-	private static String servicePackage(String baseRecordType){
-		String[] sp = baseRecordType.split("\\.");
-		StringBuilder stringBuilder = new StringBuilder();
-		for(int i = 0;i < sp.length - 2;i++){
-			stringBuilder.append(sp[i]).append(".");
+	private String servicePackage(String baseRecordType){
+		if(servicePackage == null){
+			String[] sp = baseRecordType.split("\\.");
+			StringBuilder stringBuilder = new StringBuilder();
+			for(int i = 0;i < sp.length - 2;i++){
+				stringBuilder.append(sp[i]).append(".");
+			}
+			stringBuilder.append("service");
+			return stringBuilder.toString();
+		}else{
+			return servicePackage;
 		}
-		stringBuilder.append("service");
-		return stringBuilder.toString();
 	}
 	
 	/**
@@ -225,17 +235,12 @@ public class ServiceGeneratorPlugin extends PluginAdapter {
 	 * @param baseRecordType baseRecordType
 	 * @return path
 	 */
-	private static String mapperPackage(String baseRecordType){
-		String[] sp = baseRecordType.split("\\.");
-		StringBuilder stringBuilder = new StringBuilder();
-		for(int i = 0;i < sp.length - 2;i++){
-			stringBuilder.append(sp[i]).append(".");
-		}
-		stringBuilder.append("mapper");
-		return stringBuilder.toString();
+	private String mapperPackage(){
+		String mapperPath = super.getContext().getJavaClientGeneratorConfiguration().getTargetPackage();
+		return mapperPath.replace("\\", ".");
 	}
 	
-	private static boolean langPackage(String primaryKeyType){
+	private boolean langPackage(String primaryKeyType){
 		return primaryKeyType.startsWith("java.lang.");
 	}
 	
