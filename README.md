@@ -7,20 +7,15 @@ generatorConfiguration &gt; context
 <!-- mybatis-generator-pagination plugins -->
 <plugin type="com.github.liyiorg.mbg.plugin.MySQLPaginationPlugin"></plugin>
 <plugin type="com.github.liyiorg.mbg.plugin.PostgreSQLPaginationPlugin"></plugin>
+<plugin type="com.github.liyiorg.mbg.plugin.ServiceGeneratorPlugin"></plugin>
 ```
 
 pom.xml 
 ```xml
 <dependency>
 	<groupId>com.github.liyiorg</groupId>
-	<artifactId>mbg</artifactId>
+	<artifactId>mbg-suport</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-	<exclusions>
-		<exclusion>
-			<groupId>org.mybatis.generator</groupId>
-			<artifactId>mybatis-generator-core</artifactId>
-		</exclusion>
-	</exclusions>
 </dependency>
 
 
@@ -43,7 +38,7 @@ pom.xml
 					</dependency>
 					<dependency>
 						<groupId>com.github.liyiorg</groupId>
-						<artifactId>mbg</artifactId>
+						<artifactId>mbg-plugin</artifactId>
 						<version>1.0.0-SNAPSHOT</version>
 					</dependency>
 				</dependencies>

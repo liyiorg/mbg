@@ -3,7 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.liyiorg</groupId>
 	<artifactId>mbg</artifactId>
+	<packaging>pom</packaging>
 	<version>1.0.0-SNAPSHOT</version>
+	
 	
 	<name>mbg</name>
     <description>MyBatis Generator Tool</description>
@@ -33,19 +35,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.mybatis.generator</groupId>
-			<artifactId>mybatis-generator-core</artifactId>
-			<version>1.3.5</version>
-		</dependency>
-		<dependency>
-		    <groupId>commons-logging</groupId>
-		    <artifactId>commons-logging</artifactId>
-		    <version>1.2</version>
-		</dependency>
-	</dependencies>
 	
 	<build>
 		<finalName>mbg</finalName>
@@ -142,4 +131,8 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
+    <modules>
+    	<module>mbg-plugin</module>
+    	<module>mbg-suport</module>
+    </modules>
 </project>
