@@ -79,8 +79,8 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 	 * @param element
 	 */
 	private void builderXML(XmlElement element) {
-		// 获取备注
 		try {
+			// 获取备注
 			List<Element> comments = new ArrayList<Element>();
 			for (Element e : element.getElements()) {
 				comments.add(e);
@@ -89,7 +89,7 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 				}
 			}
 
-			// 无分页 ，无排序
+			// 无分页
 			XmlElement when1 = new XmlElement("when");
 			when1.addAttribute(new Attribute("test", "limitStart == null"));
 			for (int i = comments.size(); i < element.getElements().size(); i++) {
