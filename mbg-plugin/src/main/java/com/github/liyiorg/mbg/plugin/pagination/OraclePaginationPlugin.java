@@ -89,7 +89,6 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 				}
 			}
 
-			XmlElement chooseXMLElement = new XmlElement("choose");
 			// 无分页 ，无排序
 			XmlElement when1 = new XmlElement("when");
 			when1.addAttribute(new Attribute("test", "limitStart == null"));
@@ -102,13 +101,13 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 			XmlElement when2 = new XmlElement("when");
 			when2.addAttribute(new Attribute("test", "limitStart != null and orderByClause == null"));
 			when2.addElement(new TextElement("select * from(\n"));
-			for (int i = comments.size(); i < element.getElements().size(); i++) {
+			//排除最后的 order by 条件
+			for (int i = comments.size(); i < element.getElements().size() - 1; i++) {
 				Element e = element.getElements().get(i);
-				// 排除order by
-				if (i != element.getElements().size() - 1) {
-					when2.addElement(e);
-				}
+				when2.addElement(e);
 			}
+			
+			//区分withBLOBs ROWNUM 的插入位置
 			int rownumIndex = 4;
 			for (Attribute attribute : element.getAttributes()) {
 				if ("id".equals(attribute.getName()) && "selectByExampleWithBLOBs".equals(attribute.getValue())) {
@@ -117,7 +116,7 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 				}
 			}
 			when2.addElement(rownumIndex, new TextElement(","));
-			when2.addElement(rownumIndex + 1, new TextElement("ROWNUM AS rowno"));
+			when2.addElement(rownumIndex + 1, new TextElement("ROWNUM as rowno"));
 			when2.addElement(new TextElement(""));
 			when2.addElement(new TextElement(") table_alias"));
 			when2.addElement(new TextElement("where"));
@@ -127,7 +126,7 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 			XmlElement when3 = new XmlElement("when");
 			when3.addAttribute(new Attribute("test", "limitStart != null and orderByClause != null"));
 			when3.addElement(new TextElement("select * from ("));
-			when3.addElement(new TextElement("\tselect table_warp_alias.*, ROWNUM AS rowno from("));
+			when3.addElement(new TextElement("\tselect table_warp_alias.*, ROWNUM as rowno from("));
 			when3.addElement(new TextElement(""));
 			for (int i = comments.size(); i < element.getElements().size(); i++) {
 				Element e = element.getElements().get(i);
@@ -141,6 +140,7 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 			when3.addElement(new TextElement("where"));
 			when3.addElement(new TextElement("\ttable_alias.rowno &gt;= ${limitStart}"));
 
+			XmlElement chooseXMLElement = new XmlElement("choose");
 			chooseXMLElement.addElement(when1);
 			chooseXMLElement.addElement(when2);
 			chooseXMLElement.addElement(when3);
