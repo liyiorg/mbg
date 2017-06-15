@@ -45,7 +45,6 @@ public class MBGFileUtil {
 				try {
 					fileOutputStream.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

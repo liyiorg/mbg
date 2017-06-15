@@ -5,8 +5,11 @@ generatorConfiguration &gt; context
 
 ```xml
 <!-- mybatis-generator-pagination plugins -->
-<plugin type="com.github.liyiorg.mbg.plugin.MySQLPaginationPlugin"></plugin>
-<plugin type="com.github.liyiorg.mbg.plugin.PostgreSQLPaginationPlugin"></plugin>
+<plugin type="com.github.liyiorg.mbg.plugin.pagination.MySQLPaginationPlugin"></plugin>
+<plugin type="com.github.liyiorg.mbg.plugin.pagination.OraclePaginationPlugin"></plugin>
+<plugin type="com.github.liyiorg.mbg.plugin.pagination.PostgreSQLPaginationPlugin"></plugin>
+
+<!-- mybatis-generator-service plugins -->
 <plugin type="com.github.liyiorg.mbg.plugin.ServiceGeneratorPlugin"></plugin>
 ```
 

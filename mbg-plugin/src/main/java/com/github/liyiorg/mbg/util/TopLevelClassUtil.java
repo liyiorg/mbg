@@ -12,7 +12,7 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 public class TopLevelClassUtil {
 	
 	/**
-	 * 添加成员变量
+	 * 添加成员变量 与对应的 get set 方法
 	 * @param commentGenerator
 	 * @param topLevelClass
 	 * @param introspectedTable

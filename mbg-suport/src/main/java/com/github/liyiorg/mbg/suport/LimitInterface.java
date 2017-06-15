@@ -13,4 +13,6 @@ public interface LimitInterface {
     public void setOrderByClause(String orderByClause);
     
     public String getOrderByClause();
+    
+    public String getDatabaseType();
 }

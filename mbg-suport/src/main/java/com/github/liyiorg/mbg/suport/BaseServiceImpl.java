@@ -143,8 +143,15 @@ public abstract class BaseServiceImpl<Model, Example, PrimaryKey>
 		}
 		if (example instanceof LimitInterface) {
 			LimitInterface temp = (LimitInterface) example;
-			temp.setLimitStart((long) (page - 1) * size);
-			temp.setLimitEnd((long) page * size);
+			
+			if("Oracle".equals(temp.getDatabaseType())){
+				temp.setLimitStart((long) (page - 1) * size);
+				temp.setLimitEnd((long) page * size);
+			}else{
+				temp.setLimitStart((long) (page - 1) * size);
+				temp.setLimitEnd((long) size);
+			}
+			
 			List<Model> list;
 			if(blobs){
 				list = selectByExampleWithBLOBs(example);

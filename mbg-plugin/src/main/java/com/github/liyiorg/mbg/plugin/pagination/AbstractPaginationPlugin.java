@@ -1,4 +1,4 @@
-package com.github.liyiorg.mbg.plugin;
+package com.github.liyiorg.mbg.plugin.pagination;
 
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -9,19 +9,25 @@ import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
+import com.github.liyiorg.mbg.plugin.DatabaseType;
 import com.github.liyiorg.mbg.util.TopLevelClassUtil;
 
 /**
  * Example 添加父类
  * 
- * @author Administrator
+ * @author LiYi
  *
  */
-public abstract class PaginationPlugin extends PluginAdapter {
+public abstract class AbstractPaginationPlugin extends PluginAdapter {
+	
+	public abstract DatabaseType getDataBaseType();
 
 	@Override
 	public boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable) {
+		//add DataBaseType
+		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable,new FullyQualifiedJavaType(String.class.getName()),"databaseType","\"" + getDataBaseType().name() + "\"");
+		
 		// add field, getter, setter for limit clause
 		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable,new FullyQualifiedJavaType(Long.class.getName()),"limitStart",null);
 		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable,new FullyQualifiedJavaType(Long.class.getName()),"limitEnd",null);

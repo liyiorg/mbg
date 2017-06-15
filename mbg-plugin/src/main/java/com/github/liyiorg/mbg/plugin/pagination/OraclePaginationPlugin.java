@@ -1,0 +1,170 @@
+package com.github.liyiorg.mbg.plugin.pagination;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.mybatis.generator.api.IntrospectedColumn;
+import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.dom.xml.Attribute;
+import org.mybatis.generator.api.dom.xml.Element;
+import org.mybatis.generator.api.dom.xml.TextElement;
+import org.mybatis.generator.api.dom.xml.XmlElement;
+
+import com.github.liyiorg.mbg.plugin.DatabaseType;
+
+/**
+ * <pre>
+ * add pagination using Oracle ROWNUM.
+ * This class is only used in ibator code generator.
+ * </pre>
+ */
+public class OraclePaginationPlugin extends AbstractPaginationPlugin {
+
+	@Override
+	public DatabaseType getDataBaseType() {
+		return DatabaseType.Oracle;
+	}
+
+	@Override
+	public boolean sqlMapExampleWhereClauseElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+		for (Attribute attribute : element.getAttributes()) {
+			// 确定进入 Example_Where_Clause XML
+			if ("id".equals(attribute.getName()) && "Example_Where_Clause".equals(attribute.getValue())) {
+				for (Element e : element.getElements()) {
+					if (e instanceof XmlElement) {
+						XmlElement exml = (XmlElement) e;
+						// 在where 内部添加条件块
+						if ("where".equals(exml.getName())) {
+							try {
+								XmlElement rownum = new XmlElement("if");
+								rownum.addAttribute(
+										new Attribute("test", "limitEnd != null and orderByClause == null"));
+								rownum.addElement(new TextElement("and ROWNUM &lt; ${limitEnd}"));
+								exml.getElements().add(rownum);
+							} catch (Exception e1) {
+								e1.printStackTrace();
+							}
+							break;
+						}
+					}
+				}
+				break;
+			}
+		}
+
+		return super.sqlMapExampleWhereClauseElementGenerated(element, introspectedTable);
+	}
+
+	@Override
+	public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element,
+			IntrospectedTable introspectedTable) {
+		builderXML(element);
+		return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element, introspectedTable);
+	}
+
+	@Override
+	public boolean sqlMapSelectByExampleWithBLOBsElementGenerated(XmlElement element,
+			IntrospectedTable introspectedTable) {
+		List<IntrospectedColumn> list = introspectedTable.getBLOBColumns();
+		if (list != null && list.size() > 0) {
+			builderXML(element);
+		}
+		return super.sqlMapSelectByExampleWithBLOBsElementGenerated(element, introspectedTable);
+	}
+
+	/**
+	 * 生成XML
+	 * 
+	 * @param element
+	 */
+	private void builderXML(XmlElement element) {
+		// 获取备注
+		try {
+			List<Element> comments = new ArrayList<Element>();
+			for (Element e : element.getElements()) {
+				comments.add(e);
+				if ("-->".equals(e.getFormattedContent(0))) {
+					break;
+				}
+			}
+
+			XmlElement chooseXMLElement = new XmlElement("choose");
+			// 无分页 ，无排序
+			XmlElement when1 = new XmlElement("when");
+			when1.addAttribute(new Attribute("test", "limitStart == null"));
+			for (int i = comments.size(); i < element.getElements().size(); i++) {
+				Element e = element.getElements().get(i);
+				when1.addElement(e);
+			}
+
+			// 有分页，无排序
+			XmlElement when2 = new XmlElement("when");
+			when2.addAttribute(new Attribute("test", "limitStart != null and orderByClause == null"));
+			when2.addElement(new TextElement("select * from(\n"));
+			for (int i = comments.size(); i < element.getElements().size(); i++) {
+				Element e = element.getElements().get(i);
+				// 排除order by
+				if (i != element.getElements().size() - 1) {
+					when2.addElement(e);
+				}
+			}
+			int rownumIndex = 4;
+			for (Attribute attribute : element.getAttributes()) {
+				if ("id".equals(attribute.getName()) && "selectByExampleWithBLOBs".equals(attribute.getValue())) {
+					rownumIndex = 6;
+					break;
+				}
+			}
+			when2.addElement(rownumIndex, new TextElement(","));
+			when2.addElement(rownumIndex + 1, new TextElement("ROWNUM AS rowno"));
+			when2.addElement(new TextElement(""));
+			when2.addElement(new TextElement(") table_alias"));
+			when2.addElement(new TextElement("where"));
+			when2.addElement(new TextElement("\ttable_alias.rowno &gt;= ${limitStart}"));
+
+			// 有分页，有排序
+			XmlElement when3 = new XmlElement("when");
+			when3.addAttribute(new Attribute("test", "limitStart != null and orderByClause != null"));
+			when3.addElement(new TextElement("select * from ("));
+			when3.addElement(new TextElement("\tselect table_warp_alias.*, ROWNUM AS rowno from("));
+			when3.addElement(new TextElement(""));
+			for (int i = comments.size(); i < element.getElements().size(); i++) {
+				Element e = element.getElements().get(i);
+				when3.addElement(e);
+			}
+			when3.addElement(new TextElement(""));
+			when3.addElement(new TextElement("\t) table_warp_alias"));
+			when3.addElement(new TextElement("\twhere"));
+			when3.addElement(new TextElement("\t\tROWNUM &lt; ${limitEnd}"));
+			when3.addElement(new TextElement(") table_alias"));
+			when3.addElement(new TextElement("where"));
+			when3.addElement(new TextElement("\ttable_alias.rowno &gt;= ${limitStart}"));
+
+			chooseXMLElement.addElement(when1);
+			chooseXMLElement.addElement(when2);
+			chooseXMLElement.addElement(when3);
+
+			Field field = element.getClass().getDeclaredField("elements");
+			field.setAccessible(true);
+			// 清空内部element
+			field.set(element, new ArrayList<Element>());
+			// 设置备注
+			for (Element e : comments) {
+				element.addElement(e);
+			}
+			// 设置 chooseXMLElement
+			element.addElement(chooseXMLElement);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * This plugin is always valid - no properties are required
+	 */
+	public boolean validate(List<String> warnings) {
+		return true;
+	}
+
+}
