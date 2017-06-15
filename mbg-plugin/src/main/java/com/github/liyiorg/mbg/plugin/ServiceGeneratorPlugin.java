@@ -6,6 +6,7 @@ import java.util.List;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
+import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.logging.Log;
@@ -46,7 +47,7 @@ public class ServiceGeneratorPlugin extends PluginAdapter {
 	public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 
 		topLevelClass.addImportedType(ExampleClass);
-		topLevelClass.setSuperClass(ExampleClass);
+		topLevelClass.addSuperInterface(new FullyQualifiedJavaType(ExampleClass));
 
 		return super.modelExampleClassGenerated(topLevelClass, introspectedTable);
 	}

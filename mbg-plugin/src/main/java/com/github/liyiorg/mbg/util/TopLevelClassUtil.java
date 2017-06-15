@@ -35,7 +35,7 @@ public class TopLevelClassUtil {
 		method.setVisibility(JavaVisibility.PUBLIC);
 		method.setName("set" + camel);
 		method.addParameter(new Parameter(field.getType(), name));
-		method.addBodyLine("this." + name + "=" + name + ";");
+		method.addBodyLine("this." + name + " = " + name + ";");
 		commentGenerator.addGeneralMethodComment(method, introspectedTable);
 		topLevelClass.addMethod(method);
 		method = new Method();
