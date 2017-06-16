@@ -1,6 +1,6 @@
-package com.github.liyiorg.mbg.suport;
+package com.github.liyiorg.mbg.support;
 
-public interface LimitInterface {
+public interface MbgLimit {
 
     public void setLimitStart(Long limitStart);
 

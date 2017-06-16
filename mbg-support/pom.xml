@@ -5,13 +5,13 @@
     <artifactId>mbg</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>mbg-suport</artifactId>
+  <artifactId>mbg-support</artifactId>
   
   <dependencies>
 		<dependency>
-		    <groupId>commons-logging</groupId>
-		    <artifactId>commons-logging</artifactId>
-		    <version>1.2</version>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.4.4</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -133,6 +133,6 @@
     </distributionManagement>
     <modules>
     	<module>mbg-plugin</module>
-    	<module>mbg-suport</module>
+    	<module>mbg-support</module>
     </modules>
 </project>

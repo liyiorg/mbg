@@ -20,16 +20,17 @@ public class MBGFileUtil {
 	}
 	
 	public static boolean createFile(File file,String contents){
-		if(file.getParentFile().isDirectory()){
-			if(!file.getParentFile().exists()){
-				file.getParentFile().mkdirs();
-			}
+		if(!file.getParentFile().exists()){
+			file.getParentFile().mkdirs();
 		}
-		InputStream in = new ByteArrayInputStream(contents.getBytes()); 
-		byte[] buffer = new byte[4096];
-		int bytesRead = -1;
 		FileOutputStream fileOutputStream = null;
 		try {
+			if(!file.exists()){
+				file.createNewFile();
+			}
+			InputStream in = new ByteArrayInputStream(contents.getBytes()); 
+			byte[] buffer = new byte[4096];
+			int bytesRead = -1;
 			fileOutputStream = new FileOutputStream(file);
 			while ((bytesRead = in.read(buffer)) != -1) {
 				fileOutputStream.write(buffer, 0, bytesRead);

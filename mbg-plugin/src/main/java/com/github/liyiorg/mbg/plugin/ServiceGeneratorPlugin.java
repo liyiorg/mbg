@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
@@ -20,11 +19,11 @@ import com.github.liyiorg.mbg.util.MBGFileUtil;
  * @author LiYi
  *
  */
-public class ServiceGeneratorPlugin extends PluginAdapter {
+public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 	
 	Log log = LogFactory.getLog(ServiceGeneratorPlugin.class);
 	
-	private static String ExampleClass = "com.github.liyiorg.mbg.suport.LimitInterface";
+	private static String ExampleClass = "com.github.liyiorg.mbg.support.MbgLimit";
 
 	private boolean spring = true;
 	
@@ -58,9 +57,9 @@ public class ServiceGeneratorPlugin extends PluginAdapter {
 		String superClass;
 		List<IntrospectedColumn> list = introspectedTable.getBLOBColumns();
 		if (list != null && list.size() > 0) {
-			superClass = "com.github.liyiorg.mbg.suport.BaseBLOBsService";
+			superClass = "com.github.liyiorg.mbg.support.MbgBLOBsService";
 		} else {
-			superClass = "com.github.liyiorg.mbg.suport.BaseService";
+			superClass = "com.github.liyiorg.mbg.support.MbgService";
 		}
 		String baseRecordType = introspectedTable.getBaseRecordType();
 		String exampleType = introspectedTable.getExampleType();
@@ -80,14 +79,21 @@ public class ServiceGeneratorPlugin extends PluginAdapter {
 		String serviceImplFilePath = servicePackage(baseRecordType).replace(".", "/")+"/impl/"+shortClassName(baseRecordType)+"ServiceImpl.java";
 		File serviceFile = MBGFileUtil.getFile(serviceFilePath);
 		File serviceImplFile = MBGFileUtil.getFile(serviceImplFilePath);
+		
 		if(!serviceFile.exists()){
 			MBGFileUtil.createFile(serviceFile, serviceCode);
 			log.debug("Generated file is saved as " + serviceFile.getAbsolutePath());
+		}else{
+			log.warn("Existing file " + serviceFile.getAbsolutePath());
 		}
+		
 		if(!serviceImplFile.exists()){
 			MBGFileUtil.createFile(serviceImplFile, serviceCodeImpl);
 			log.debug("Generated file is saved as " + serviceImplFile.getAbsolutePath());
+		}else{
+			log.warn("Existing file " + serviceImplFile.getAbsolutePath());
 		}
+		
 		return super.clientGenerated(interfaze, topLevelClass, introspectedTable);
 	}
 
@@ -164,13 +170,13 @@ public class ServiceGeneratorPlugin extends PluginAdapter {
 			 
 		stringBuilder.append(System.lineSeparator())
 					 .append("import ").append(servicePackage(baseRecordType)).append(".").append(shortClassName(baseRecordType)).append("Service").append(";").append(System.lineSeparator())
-					 .append("import com.github.liyiorg.mbg.suport.BaseServiceImpl").append(";").append(System.lineSeparator())
+					 .append("import com.github.liyiorg.mbg.support.MbgServiceSupport").append(";").append(System.lineSeparator())
 					 .append(System.lineSeparator());
 		if(spring){
 			stringBuilder.append("@Service").append(System.lineSeparator());
 		}
 		
-		stringBuilder.append("public class ").append(shortClassName(baseRecordType)).append("ServiceImpl extends BaseServiceImpl")
+		stringBuilder.append("public class ").append(shortClassName(baseRecordType)).append("ServiceImpl extends MbgServiceSupport")
 					 	.append("<")
 					 	.append(shortClassName(baseRecordType))
 					 	.append(", ")
@@ -178,7 +184,7 @@ public class ServiceGeneratorPlugin extends PluginAdapter {
 					 	.append(", ")
 					 	.append(shortClassName(primaryKeyType))
 					 	.append(">")
-					 	.append("implements ").append(shortClassName(baseRecordType)).append("Service")
+					 	.append(" implements ").append(shortClassName(baseRecordType)).append("Service")
 					 .append("{").append(System.lineSeparator())
 					 .append(System.lineSeparator());
 		if(spring){

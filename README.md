@@ -17,7 +17,7 @@ pom.xml
 ```xml
 <dependency>
 	<groupId>com.github.liyiorg</groupId>
-	<artifactId>mbg-suport</artifactId>
+	<artifactId>mbg-support</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 </dependency>
 

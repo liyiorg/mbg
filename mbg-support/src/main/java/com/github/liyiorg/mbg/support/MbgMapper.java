@@ -1,10 +1,10 @@
-package com.github.liyiorg.mbg.suport;
+package com.github.liyiorg.mbg.support;
 
 import java.util.List;
 
-import com.github.liyiorg.mbg.bean.Page;
+import org.apache.ibatis.annotations.Param;
 
-public interface BaseService<Model, Example, PrimaryKey> {
+public interface MbgMapper<Model, Example, PrimaryKey> {
 
 	long countByExample(Example example);
 
@@ -20,13 +20,12 @@ public interface BaseService<Model, Example, PrimaryKey> {
 
 	Model selectByPrimaryKey(PrimaryKey id);
 
-	int updateByExampleSelective(Model record, Example example);
+	int updateByExampleSelective(@Param("record") Model record,@Param("example") Example example);
 
-	int updateByExample(Model record, Example example);
+	int updateByExample(@Param("record") Model record,@Param("example") Example example);
 
 	int updateByPrimaryKeySelective(Model record);
 
 	int updateByPrimaryKey(Model record);
 	
-	Page<Model> selectByExample(Example example,Integer page,Integer size);
 }
