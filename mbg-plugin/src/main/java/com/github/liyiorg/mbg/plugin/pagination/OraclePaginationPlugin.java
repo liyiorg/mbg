@@ -59,7 +59,7 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 	@Override
 	public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element,
 			IntrospectedTable introspectedTable) {
-		builderXML(element,introspectedTable);
+		builderXML(element);
 		return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element, introspectedTable);
 	}
 
@@ -68,7 +68,7 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 			IntrospectedTable introspectedTable) {
 		List<IntrospectedColumn> list = introspectedTable.getBLOBColumns();
 		if (list != null && list.size() > 0) {
-			builderXML(element,introspectedTable);
+			builderXML(element);
 		}
 		return super.sqlMapSelectByExampleWithBLOBsElementGenerated(element, introspectedTable);
 	}
@@ -78,7 +78,7 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 	 * 
 	 * @param element
 	 */
-	private void builderXML(XmlElement element,IntrospectedTable introspectedTable) {
+	private void builderXML(XmlElement element) {
 		try {
 			// 获取备注
 			List<Element> comments = new ArrayList<Element>();
@@ -104,19 +104,15 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 			//排除最后的 order by 条件
 			for (int i = comments.size(); i < element.getElements().size() - 1; i++) {
 				Element e = element.getElements().get(i);
+				if(e instanceof TextElement){
+					TextElement etemp = (TextElement)e;
+					if(etemp.getContent().startsWith("from ")){
+						when2.addElement(new TextElement(","));
+						when2.addElement(new TextElement("ROWNUM as rowno"));
+					}
+				}
 				when2.addElement(e);
 			}
-			
-			//区分withBLOBs ROWNUM 的插入位置
-			int rownumIndex = 4;
-			for (Attribute attribute : element.getAttributes()) {
-				if ("id".equals(attribute.getName()) && introspectedTable.getSelectByExampleWithBLOBsStatementId().equals(attribute.getValue())) {
-					rownumIndex = 6;
-					break;
-				}
-			}
-			when2.addElement(rownumIndex, new TextElement(","));
-			when2.addElement(rownumIndex + 1, new TextElement("ROWNUM as rowno"));
 			when2.addElement(new TextElement(""));
 			when2.addElement(new TextElement(") table_alias"));
 			when2.addElement(new TextElement("where"));
