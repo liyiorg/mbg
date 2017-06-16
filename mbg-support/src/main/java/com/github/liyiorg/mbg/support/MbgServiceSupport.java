@@ -47,7 +47,7 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 			MbgBLOBsMapper<Model, Example, PrimaryKey> blobsMapper = (MbgBLOBsMapper<Model, Example, PrimaryKey>) mapper;
 			return blobsMapper.selectByExampleWithBLOBs(example);
 		}
-		return null;
+		return selectByExample(example);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 			MbgBLOBsMapper<Model, Example, PrimaryKey> blobsMapper = (MbgBLOBsMapper<Model, Example, PrimaryKey>) mapper;
 			return blobsMapper.updateByExampleWithBLOBs(record,example);
 		}
-		return 0;
+		return updateByExample(record, example);
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 			MbgBLOBsMapper<Model, Example, PrimaryKey> blobsMapper = (MbgBLOBsMapper<Model, Example, PrimaryKey>) mapper;
 			return blobsMapper.updateByPrimaryKeyWithBLOBs(record);
 		}
-		return 0;
+		return updateByPrimaryKey(record);
 	}
 
 	@Override
