@@ -30,7 +30,7 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 	public boolean sqlMapExampleWhereClauseElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
 		for (Attribute attribute : element.getAttributes()) {
 			// 确定进入 Example_Where_Clause XML
-			if ("id".equals(attribute.getName()) && "Example_Where_Clause".equals(attribute.getValue())) {
+			if ("id".equals(attribute.getName()) && introspectedTable.getExampleWhereClauseId().equals(attribute.getValue())) {
 				for (Element e : element.getElements()) {
 					if (e instanceof XmlElement) {
 						XmlElement exml = (XmlElement) e;
@@ -59,7 +59,7 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 	@Override
 	public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element,
 			IntrospectedTable introspectedTable) {
-		builderXML(element);
+		builderXML(element,introspectedTable);
 		return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element, introspectedTable);
 	}
 
@@ -68,7 +68,7 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 			IntrospectedTable introspectedTable) {
 		List<IntrospectedColumn> list = introspectedTable.getBLOBColumns();
 		if (list != null && list.size() > 0) {
-			builderXML(element);
+			builderXML(element,introspectedTable);
 		}
 		return super.sqlMapSelectByExampleWithBLOBsElementGenerated(element, introspectedTable);
 	}
@@ -78,7 +78,7 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 	 * 
 	 * @param element
 	 */
-	private void builderXML(XmlElement element) {
+	private void builderXML(XmlElement element,IntrospectedTable introspectedTable) {
 		try {
 			// 获取备注
 			List<Element> comments = new ArrayList<Element>();
@@ -110,7 +110,7 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 			//区分withBLOBs ROWNUM 的插入位置
 			int rownumIndex = 4;
 			for (Attribute attribute : element.getAttributes()) {
-				if ("id".equals(attribute.getName()) && "selectByExampleWithBLOBs".equals(attribute.getValue())) {
+				if ("id".equals(attribute.getName()) && introspectedTable.getSelectByExampleWithBLOBsStatementId().equals(attribute.getValue())) {
 					rownumIndex = 6;
 					break;
 				}

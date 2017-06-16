@@ -13,7 +13,7 @@ import org.mybatis.generator.logging.Log;
 import org.mybatis.generator.logging.LogFactory;
 
 /**
- * 生成Service 代码
+ * Mapper 添加父类
  * 
  * @author LiYi
  *
@@ -30,8 +30,8 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 	@Override
 	public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable) {
-		String superClass;
 		try {
+			String superClass;
 			List<IntrospectedColumn> list = introspectedTable.getBLOBColumns();
 			if (list != null && list.size() > 0) {
 				superClass = "com.github.liyiorg.mbg.support.MbgBLOBsMapper";
@@ -71,14 +71,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return super.clientGenerated(interfaze, topLevelClass, introspectedTable);
 	}
 	
-	
-
 	@Override
 	public boolean clientCountByExampleMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientCountByExampleMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -86,13 +83,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	@Override
 	public boolean clientDeleteByExampleMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientDeleteByExampleMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -100,13 +95,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	@Override
 	public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -114,13 +107,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	@Override
 	public boolean clientInsertMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientInsertMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -128,13 +119,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	@Override
 	public boolean clientSelectByExampleWithBLOBsMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientSelectByExampleWithBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -142,13 +131,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	@Override
 	public boolean clientSelectByExampleWithoutBLOBsMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientSelectByExampleWithoutBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -156,13 +143,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	@Override
 	public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -170,13 +155,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	@Override
 	public boolean clientUpdateByExampleSelectiveMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientUpdateByExampleSelectiveMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -184,13 +167,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	@Override
 	public boolean clientUpdateByExampleWithBLOBsMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientUpdateByExampleWithBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -198,13 +179,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	@Override
 	public boolean clientUpdateByExampleWithoutBLOBsMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientUpdateByExampleWithoutBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -212,13 +191,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	@Override
 	public boolean clientUpdateByPrimaryKeySelectiveMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientUpdateByPrimaryKeySelectiveMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -226,13 +203,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	@Override
 	public boolean clientUpdateByPrimaryKeyWithBLOBsMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientUpdateByPrimaryKeyWithBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -240,13 +215,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	@Override
 	public boolean clientUpdateByPrimaryKeyWithoutBLOBsMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientUpdateByPrimaryKeyWithoutBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -254,13 +227,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	@Override
 	public boolean clientInsertSelectiveMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientInsertSelectiveMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -268,13 +239,11 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	@Override
 	public boolean clientSelectAllMethodGenerated(Method method, Interface interfaze,
 			IntrospectedTable introspectedTable) {
 		return false;
 	}
-
 
 	@Override
 	public boolean clientSelectAllMethodGenerated(Method method, TopLevelClass topLevelClass,
@@ -282,21 +251,21 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 		return false;
 	}
 
-
 	public boolean validate(List<String> warnings) {
 		return true;
 	}
-	
+
 	/**
 	 * 获取类simple name
+	 * 
 	 * @param fullClassName
 	 * @return
 	 */
-	private String shortClassName(String fullClassName){
-		if(fullClassName != null){
+	private String shortClassName(String fullClassName) {
+		if (fullClassName != null) {
 			return fullClassName.replaceAll("(.*\\.)+(.*)", "$2");
 		}
 		return fullClassName;
 	}
-	
+
 }
