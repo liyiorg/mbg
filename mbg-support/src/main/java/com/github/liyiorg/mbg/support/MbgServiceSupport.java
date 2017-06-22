@@ -106,7 +106,7 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 	 * 批量操作
 	 * 
 	 * @param statements
-	 *            SQl语句 或 MAPPER 方法
+	 *            MAPPER 方法,必须包含 insert,delete,update 字样
 	 * @param params
 	 *            POJO,map
 	 * @return
@@ -120,7 +120,7 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 	 * The statements and params length must 1:N or N:N
 	 * 
 	 * @param statements
-	 *            SQl语句 或 MAPPER 方法
+	 *           MAPPER 方法,必须包含 insert,delete,update 字样
 	 * @param params
 	 *            POJO,map
 	 * @return
@@ -147,6 +147,8 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 					type = 2;
 				} else if (method.matches("(\\w*(i?)update)\\w*")) {
 					type = 3;
+				}else{
+					throw new RuntimeException("BatchExec error,The statement must insert,delete,update with '"+mapperStatement+"'");
 				}
 
 				if (statements.length == 1 && params.length > 1) {
