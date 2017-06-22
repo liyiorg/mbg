@@ -15,6 +15,8 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 
 	protected MbgMapper<Model, Example, PrimaryKey> mapper;
 
+	private MbgBLOBsMapper<Model, Example, PrimaryKey> blobsMapper;
+
 	protected SqlSessionFactory sqlSessionFactory;
 
 	private Class<?> exampleClass;
@@ -23,6 +25,15 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 
 	{
 		exampleClass = GenericsUtils.getSuperClassGenricType(this.getClass(), 1);
+	}
+
+	private MbgBLOBsMapper<Model, Example, PrimaryKey> blobsMapper() {
+		if (blobsMapper == null) {
+			if (mapper instanceof MbgBLOBsMapper) {
+				blobsMapper = (MbgBLOBsMapper<Model, Example, PrimaryKey>) mapper;
+			}
+		}
+		return blobsMapper;
 	}
 
 	@Override
@@ -52,8 +63,7 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 
 	@Override
 	public List<Model> selectByExampleWithBLOBs(Example example) {
-		if (mapper instanceof MbgBLOBsMapper) {
-			MbgBLOBsMapper<Model, Example, PrimaryKey> blobsMapper = (MbgBLOBsMapper<Model, Example, PrimaryKey>) mapper;
+		if (blobsMapper() != null) {
 			return blobsMapper.selectByExampleWithBLOBs(example);
 		}
 		return selectByExample(example);
@@ -76,8 +86,7 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 
 	@Override
 	public int updateByExampleWithBLOBs(Model record, Example example) {
-		if (mapper instanceof MbgBLOBsMapper) {
-			MbgBLOBsMapper<Model, Example, PrimaryKey> blobsMapper = (MbgBLOBsMapper<Model, Example, PrimaryKey>) mapper;
+		if (blobsMapper() != null) {
 			return blobsMapper.updateByExampleWithBLOBs(record, example);
 		}
 		return updateByExample(record, example);
@@ -95,8 +104,7 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 
 	@Override
 	public int updateByPrimaryKeyWithBLOBs(Model record) {
-		if (mapper instanceof MbgBLOBsMapper) {
-			MbgBLOBsMapper<Model, Example, PrimaryKey> blobsMapper = (MbgBLOBsMapper<Model, Example, PrimaryKey>) mapper;
+		if (blobsMapper() != null) {
 			return blobsMapper.updateByPrimaryKeyWithBLOBs(record);
 		}
 		return updateByPrimaryKey(record);
@@ -108,7 +116,7 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 	 * @param statements
 	 *            MAPPER 方法,必须包含 insert,delete,update 字样
 	 * @param params
-	 *            POJO,map
+	 *            POJO,MAP
 	 * @return
 	 */
 	protected int[] batchExec(String statements, Object[] params) {
@@ -120,9 +128,9 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 	 * The statements and params length must 1:N or N:N
 	 * 
 	 * @param statements
-	 *           MAPPER 方法,必须包含 insert,delete,update 字样
+	 *            MAPPER 方法,必须包含 insert,delete,update 字样
 	 * @param params
-	 *            POJO,map
+	 *            POJO,MAP
 	 * @return
 	 */
 	protected int[] batchExec(String[] statements, Object[] params) {
@@ -147,8 +155,9 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 					type = 2;
 				} else if (method.matches("(\\w*(i?)update)\\w*")) {
 					type = 3;
-				}else{
-					throw new RuntimeException("BatchExec error,The statement must insert,delete,update with '"+mapperStatement+"'");
+				} else {
+					throw new RuntimeException(
+							"BatchExec error,The statement must insert,delete,update with '" + mapperStatement + "'");
 				}
 
 				if (statements.length == 1 && params.length > 1) {
@@ -190,7 +199,6 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 			for (BatchResult batchResult : list) {
 				updateCount[i++] = batchResult.getUpdateCounts()[0];
 			}
-			sqlSession.close();
 			return updateCount;
 		} finally {
 			if (sqlSession != null) {
@@ -230,7 +238,7 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 	}
 
 	@Override
-	public int[] batchupdateByExample(ModelExample<Model, Example>[] modelExample) {
+	public int[] batchUpdateByExample(ModelExample<Model, Example>[] modelExample) {
 		return batchExec("updateByExample", modelExample);
 	}
 
@@ -246,12 +254,18 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 
 	@Override
 	public int[] batchUpdateByExampleWithBLOBs(ModelExample<Model, Example>[] modelExample) {
-		return batchExec("updateByExampleWithBLOBs", modelExample);
+		if (blobsMapper() != null) {
+			return batchExec("updateByExampleWithBLOBs", modelExample);
+		}
+		return batchUpdateByExample(modelExample);
 	}
 
 	@Override
 	public int[] batchUpdateByPrimaryKeyWithBLOBs(Model[] record) {
-		return batchExec("updateByPrimaryKeyWithBLOBs", record);
+		if (blobsMapper() != null) {
+			return batchExec("updateByPrimaryKeyWithBLOBs", record);
+		}
+		return batchUpdateByPrimaryKey(record);
 	}
 
 	@Override

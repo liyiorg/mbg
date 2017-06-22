@@ -34,7 +34,7 @@ public interface MbgService<Model, Example, PrimaryKey> {
 
 	int updateByExample(Model record,Example example);
 	
-	int[] batchupdateByExample(ModelExample<Model,Example>[] modelExample);
+	int[] batchUpdateByExample(ModelExample<Model,Example>[] modelExample);
 
 	int updateByPrimaryKeySelective(Model record);
 	
