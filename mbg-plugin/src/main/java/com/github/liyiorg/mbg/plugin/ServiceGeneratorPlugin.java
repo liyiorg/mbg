@@ -157,6 +157,7 @@ public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 			.append("import javax.annotation.Resource").append(";").append(System.lineSeparator())
 			.append(System.lineSeparator())
 			.append("import org.springframework.stereotype.Service").append(";").append(System.lineSeparator())
+			.append("import org.apache.ibatis.session.SqlSessionFactory").append(";").append(System.lineSeparator())
 			.append(System.lineSeparator());
 			
 		}
@@ -195,11 +196,24 @@ public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 		stringBuilder.append("\tprivate ").append(shortName).append("Mapper").append(" ")
 										   .append(shortNameLowerCase).append("Mapper;").append(System.lineSeparator())
 										   .append(System.lineSeparator());
+		
+		if(spring){
+			stringBuilder.append("\t@Resource").append(System.lineSeparator());
+		}
+		stringBuilder.append("\tprivate SqlSessionFactory sqlSessionFactory;").append(System.lineSeparator()).append(System.lineSeparator());
+		
+		
 		if(spring){
 			stringBuilder.append("\t@PostConstruct").append(System.lineSeparator())
-			.append("\tprivate void mapper(){").append(System.lineSeparator())
+			.append("\tprivate void initService(){").append(System.lineSeparator())
+			.append("\t\tsuper.mapperName = ").append(shortName).append("Mapper").append(".class.getName();").append(System.lineSeparator())
 			.append("\t\tsuper.mapper = ").append(shortNameLowerCase).append("Mapper;").append(System.lineSeparator())
+			.append("\t\tsuper.sqlSessionFactory = sqlSessionFactory;").append(System.lineSeparator())
 			.append("\t}");
+		}else{
+			stringBuilder.append("{").append(System.lineSeparator())
+			.append("\t\tsuper.mapperName = ").append(shortName).append("Mapper").append(".class.getName();").append(System.lineSeparator())
+			.append("}");
 		}
 		stringBuilder.append(System.lineSeparator())
 			.append("}");

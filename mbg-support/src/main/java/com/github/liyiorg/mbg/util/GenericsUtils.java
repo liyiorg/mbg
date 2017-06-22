@@ -19,8 +19,7 @@ public class GenericsUtils {
      * @param index 泛型参数所在索引,从0开始.  
      * @return 范型参数的实际类型, 如果没有实现ParameterizedType接口，即不支持泛型，所以直接返回<code>Object.class</code>
      */  
-    @SuppressWarnings("unchecked")
-	public static Class getSuperClassGenricType(Class clazz, int index) {    
+    public static Class<?> getSuperClassGenricType(Class<?> clazz, int index) {    
         Type genType = clazz.getGenericSuperclass();//得到泛型父类  
         //如果没有实现ParameterizedType接口，即不支持泛型，直接返回Object.class   
         if (!(genType instanceof ParameterizedType)) {
@@ -34,7 +33,7 @@ public class GenericsUtils {
         if (!(params[index] instanceof Class)) {
             return Object.class;   
         }   
-        return (Class) params[index];
+        return (Class<?>) params[index];
     }
 	/**  
      * 通过反射,获得指定类的父类的第一个泛型参数的实际类型. 如BuyerServiceBean extends DaoSupport<Buyer>  
@@ -42,8 +41,7 @@ public class GenericsUtils {
      * @param clazz clazz 需要反射的类,该类必须继承泛型父类
      * @return 泛型参数的实际类型, 如果没有实现ParameterizedType接口，即不支持泛型，所以直接返回<code>Object.class</code>
      */  
-    @SuppressWarnings("unchecked")
-	public static Class getSuperClassGenricType(Class clazz) {
+	public static Class<?> getSuperClassGenricType(Class<?> clazz) {
     	return getSuperClassGenricType(clazz,0);
     }
 	/**  
@@ -53,8 +51,7 @@ public class GenericsUtils {
      * @param int index 泛型参数所在索引,从0开始.
      * @return 泛型参数的实际类型, 如果没有实现ParameterizedType接口，即不支持泛型，所以直接返回<code>Object.class</code>
      */ 
-    @SuppressWarnings("unchecked")
-	public static Class getMethodGenericReturnType(Method method, int index) {
+	public static Class<?> getMethodGenericReturnType(Method method, int index) {
     	Type returnType = method.getGenericReturnType();
     	if(returnType instanceof ParameterizedType){
     	    ParameterizedType type = (ParameterizedType) returnType;
@@ -62,7 +59,7 @@ public class GenericsUtils {
             if (index >= typeArguments.length || index < 0) { 
             	 throw new RuntimeException("你输入的索引"+ (index<0 ? "不能小于0" : "超出了参数的总数"));
             } 
-    	    return (Class)typeArguments[index];
+    	    return (Class<?>)typeArguments[index];
     	}
     	return Object.class;
     }
@@ -72,8 +69,7 @@ public class GenericsUtils {
      * @param Method method 方法
      * @return 泛型参数的实际类型, 如果没有实现ParameterizedType接口，即不支持泛型，所以直接返回<code>Object.class</code>
      */ 
-    @SuppressWarnings("unchecked")
-	public static Class getMethodGenericReturnType(Method method) {
+	public static Class<?> getMethodGenericReturnType(Method method) {
     	return getMethodGenericReturnType(method, 0);
     }
     
@@ -84,9 +80,8 @@ public class GenericsUtils {
      * @param int index 第几个输入参数
      * @return 输入参数的泛型参数的实际类型集合, 如果没有实现ParameterizedType接口，即不支持泛型，所以直接返回空集合
      */ 
-    @SuppressWarnings("unchecked")
-	public static List<Class> getMethodGenericParameterTypes(Method method, int index) {
-    	List<Class> results = new ArrayList<Class>();
+	public static List<Class<?>> getMethodGenericParameterTypes(Method method, int index) {
+    	List<Class<?>> results = new ArrayList<Class<?>>();
     	Type[] genericParameterTypes = method.getGenericParameterTypes();
     	if (index >= genericParameterTypes.length ||index < 0) {
              throw new RuntimeException("你输入的索引"+ (index<0 ? "不能小于0" : "超出了参数的总数"));
@@ -96,7 +91,7 @@ public class GenericsUtils {
     	     ParameterizedType aType = (ParameterizedType) genericParameterType;
     	     Type[] parameterArgTypes = aType.getActualTypeArguments();
     	     for(Type parameterArgType : parameterArgTypes){
-    	         Class parameterArgClass = (Class) parameterArgType;
+    	         Class<?> parameterArgClass = (Class<?>) parameterArgType;
     	         results.add(parameterArgClass);
     	     }
     	     return results;
@@ -109,8 +104,7 @@ public class GenericsUtils {
      * @param Method method 方法
      * @return 输入参数的泛型参数的实际类型集合, 如果没有实现ParameterizedType接口，即不支持泛型，所以直接返回空集合
      */ 
-    @SuppressWarnings("unchecked")
-	public static List<Class> getMethodGenericParameterTypes(Method method) {
+	public static List<Class<?>> getMethodGenericParameterTypes(Method method) {
     	return getMethodGenericParameterTypes(method, 0);
     }
 	/**  
@@ -120,8 +114,7 @@ public class GenericsUtils {
      * @param int index 泛型参数所在索引,从0开始.
      * @return 泛型参数的实际类型, 如果没有实现ParameterizedType接口，即不支持泛型，所以直接返回<code>Object.class</code>
      */ 
-    @SuppressWarnings("unchecked")
-	public static Class getFieldGenericType(Field field, int index) {
+	public static Class<?> getFieldGenericType(Field field, int index) {
     	Type genericFieldType = field.getGenericType();
     	
     	if(genericFieldType instanceof ParameterizedType){
@@ -130,7 +123,7 @@ public class GenericsUtils {
     	    if (index >= fieldArgTypes.length || index < 0) { 
     	    	throw new RuntimeException("你输入的索引"+ (index<0 ? "不能小于0" : "超出了参数的总数"));
             } 
-    	    return (Class)fieldArgTypes[index];
+    	    return (Class<?>)fieldArgTypes[index];
     	}
     	return Object.class;
     }
@@ -141,8 +134,7 @@ public class GenericsUtils {
      * @param int index 泛型参数所在索引,从0开始.
      * @return 泛型参数的实际类型, 如果没有实现ParameterizedType接口，即不支持泛型，所以直接返回<code>Object.class</code>
      */ 
-    @SuppressWarnings("unchecked")
-	public static Class getFieldGenericType(Field field) {
+	public static Class<?> getFieldGenericType(Field field) {
     	return getFieldGenericType(field, 0);
     }
 }
