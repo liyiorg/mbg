@@ -1,7 +1,8 @@
-package com.github.liyiorg.mbg.support;
+package com.github.liyiorg.mbg.support.service;
 
 import java.util.List;
 
+import com.github.liyiorg.mbg.bean.ModelExample;
 import com.github.liyiorg.mbg.bean.Page;
 
 public interface MbgBLOBsService<Model, Example, PrimaryKey> extends MbgService<Model, Example, PrimaryKey> {

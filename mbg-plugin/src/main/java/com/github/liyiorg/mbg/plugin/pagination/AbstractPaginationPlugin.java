@@ -20,8 +20,10 @@ import com.github.liyiorg.mbg.util.TopLevelClassUtil;
  */
 public abstract class AbstractPaginationPlugin extends PluginAdapter {
 	
-	public abstract DatabaseType getDataBaseType();
+	private static String ExampleClass = "com.github.liyiorg.mbg.support.example.MbgExample";
 
+	public abstract DatabaseType getDataBaseType();
+	
 	@Override
 	public boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable) {
@@ -32,6 +34,10 @@ public abstract class AbstractPaginationPlugin extends PluginAdapter {
 		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable,new FullyQualifiedJavaType(Long.class.getName()),"limitStart",null);
 		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable,new FullyQualifiedJavaType(Long.class.getName()),"limitEnd",null);
 		addLimitMethod(topLevelClass, introspectedTable);
+		
+		// add MbgExample interface
+		topLevelClass.addImportedType(ExampleClass);
+		topLevelClass.addSuperInterface(new FullyQualifiedJavaType(ExampleClass));
 		return super.modelExampleClassGenerated(topLevelClass,introspectedTable);
 	}
 	

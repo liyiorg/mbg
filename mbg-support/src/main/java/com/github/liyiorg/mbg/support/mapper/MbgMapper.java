@@ -1,4 +1,4 @@
-package com.github.liyiorg.mbg.support;
+package com.github.liyiorg.mbg.support.mapper;
 
 import java.util.List;
 

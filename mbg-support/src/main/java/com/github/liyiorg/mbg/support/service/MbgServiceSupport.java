@@ -1,4 +1,4 @@
-package com.github.liyiorg.mbg.support;
+package com.github.liyiorg.mbg.support.service;
 
 import java.util.List;
 
@@ -7,7 +7,11 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import com.github.liyiorg.mbg.bean.ModelExample;
 import com.github.liyiorg.mbg.bean.Page;
+import com.github.liyiorg.mbg.support.example.MbgExample;
+import com.github.liyiorg.mbg.support.mapper.MbgBLOBsMapper;
+import com.github.liyiorg.mbg.support.mapper.MbgMapper;
 import com.github.liyiorg.mbg.util.GenericsUtils;
 
 public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
@@ -302,8 +306,8 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 				e.printStackTrace();
 			}
 		}
-		if (example instanceof MbgLimit) {
-			MbgLimit temp = (MbgLimit) example;
+		if (example instanceof MbgExample) {
+			MbgExample temp = (MbgExample) example;
 
 			if ("Oracle".equals(temp.getDatabaseType())) {
 				temp.setLimitStart((long) (page - 1) * size);

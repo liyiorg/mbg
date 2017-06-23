@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.logging.Log;
@@ -23,11 +22,15 @@ public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 	
 	Log log = LogFactory.getLog(ServiceGeneratorPlugin.class);
 	
-	private static String ExampleClass = "com.github.liyiorg.mbg.support.MbgLimit";
-
 	private boolean spring = true;
 	
 	private String servicePackage;
+	
+	private static final String MbgServiceClass = "com.github.liyiorg.mbg.support.service.MbgService";
+	
+	private static final String MbgBLOBsServiceClass = "com.github.liyiorg.mbg.support.service.MbgBLOBsService";
+	
+	private static final String MbgServiceSupportClass = "com.github.liyiorg.mbg.support.service.MbgServiceSupport";
 
 	@Override
 	public void initialized(IntrospectedTable introspectedTable) {
@@ -43,23 +46,14 @@ public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 	}
 
 	@Override
-	public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-
-		topLevelClass.addImportedType(ExampleClass);
-		topLevelClass.addSuperInterface(new FullyQualifiedJavaType(ExampleClass));
-
-		return super.modelExampleClassGenerated(topLevelClass, introspectedTable);
-	}
-
-	@Override
 	public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable) {
 		String superClass;
 		List<IntrospectedColumn> list = introspectedTable.getBLOBColumns();
 		if (list != null && list.size() > 0) {
-			superClass = "com.github.liyiorg.mbg.support.MbgBLOBsService";
+			superClass = MbgBLOBsServiceClass;
 		} else {
-			superClass = "com.github.liyiorg.mbg.support.MbgService";
+			superClass = MbgServiceClass;
 		}
 		String baseRecordType = introspectedTable.getBaseRecordType();
 		String exampleType = introspectedTable.getExampleType();
@@ -171,13 +165,13 @@ public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 			 
 		stringBuilder.append(System.lineSeparator())
 					 .append("import ").append(servicePackage(baseRecordType)).append(".").append(shortClassName(baseRecordType)).append("Service").append(";").append(System.lineSeparator())
-					 .append("import com.github.liyiorg.mbg.support.MbgServiceSupport").append(";").append(System.lineSeparator())
+					 .append("import ").append(MbgServiceSupportClass).append(";").append(System.lineSeparator())
 					 .append(System.lineSeparator());
 		if(spring){
 			stringBuilder.append("@Service").append(System.lineSeparator());
 		}
 		
-		stringBuilder.append("public class ").append(shortClassName(baseRecordType)).append("ServiceImpl extends MbgServiceSupport")
+		stringBuilder.append("public class ").append(shortClassName(baseRecordType)).append("ServiceImpl extends ").append(shortClassName(MbgServiceSupportClass))
 					 	.append("<")
 					 	.append(shortClassName(baseRecordType))
 					 	.append(", ")
@@ -218,18 +212,6 @@ public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 		stringBuilder.append(System.lineSeparator())
 			.append("}");
 		return stringBuilder.toString();
-	}
-	
-	/**
-	 * 获取类simple name
-	 * @param fullClassName
-	 * @return
-	 */
-	private String shortClassName(String fullClassName){
-		if(fullClassName != null){
-			return fullClassName.replaceAll("(.*\\.)+(.*)", "$2");
-		}
-		return fullClassName;
 	}
 	
 	/**

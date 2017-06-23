@@ -22,6 +22,10 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 	
 	Log log = LogFactory.getLog(SuperMapperGeneratorPlugin.class);
 	
+	private static final String MbgMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgMapper";
+	
+	private static final String MbgBLOBsMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgBLOBsMapper";
+	
 	@Override
 	public void initialized(IntrospectedTable introspectedTable) {
 		
@@ -34,9 +38,9 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 			String superClass;
 			List<IntrospectedColumn> list = introspectedTable.getBLOBColumns();
 			if (list != null && list.size() > 0) {
-				superClass = "com.github.liyiorg.mbg.support.MbgBLOBsMapper";
+				superClass = MbgBLOBsMapperClass;
 			} else {
-				superClass = "com.github.liyiorg.mbg.support.MbgMapper";
+				superClass = MbgMapperClass;
 			}
 			String baseRecordType = introspectedTable.getBaseRecordType();
 			String exampleType = introspectedTable.getExampleType();
@@ -261,7 +265,7 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 	 * @param fullClassName
 	 * @return
 	 */
-	private String shortClassName(String fullClassName) {
+	protected String shortClassName(String fullClassName) {
 		if (fullClassName != null) {
 			return fullClassName.replaceAll("(.*\\.)+(.*)", "$2");
 		}
