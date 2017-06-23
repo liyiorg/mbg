@@ -20,17 +20,12 @@ import org.mybatis.generator.logging.LogFactory;
  */
 public class SuperMapperGeneratorPlugin extends PluginAdapter {
 	
-	Log log = LogFactory.getLog(SuperMapperGeneratorPlugin.class);
+	private static Log log = LogFactory.getLog(SuperMapperGeneratorPlugin.class);
 	
 	private static final String MbgMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgMapper";
 	
 	private static final String MbgBLOBsMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgBLOBsMapper";
 	
-	@Override
-	public void initialized(IntrospectedTable introspectedTable) {
-		
-	}
-
 	@Override
 	public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable) {

@@ -28,11 +28,11 @@ public abstract class AbstractPaginationPlugin extends PluginAdapter {
 	public boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable) {
 		//add DataBaseType
-		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable,new FullyQualifiedJavaType(String.class.getName()),"databaseType","\"" + getDataBaseType().name() + "\"");
+		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable, false,new FullyQualifiedJavaType(String.class.getName()),"databaseType","\"" + getDataBaseType().name() + "\"",true);
 		
 		// add field, getter, setter for limit clause
-		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable,new FullyQualifiedJavaType(Long.class.getName()),"limitStart",null);
-		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable,new FullyQualifiedJavaType(Long.class.getName()),"limitEnd",null);
+		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable, false,new FullyQualifiedJavaType(Long.class.getName()),"limitStart",null,true);
+		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable, false,new FullyQualifiedJavaType(Long.class.getName()),"limitEnd",null,true);
 		addLimitMethod(topLevelClass, introspectedTable);
 		
 		// add MbgExample interface

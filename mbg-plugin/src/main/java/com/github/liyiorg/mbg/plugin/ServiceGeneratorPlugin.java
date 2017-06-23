@@ -20,7 +20,7 @@ import com.github.liyiorg.mbg.util.MBGFileUtil;
  */
 public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 	
-	Log log = LogFactory.getLog(ServiceGeneratorPlugin.class);
+	private static Log log = LogFactory.getLog(ServiceGeneratorPlugin.class);
 	
 	private boolean spring = true;
 	
