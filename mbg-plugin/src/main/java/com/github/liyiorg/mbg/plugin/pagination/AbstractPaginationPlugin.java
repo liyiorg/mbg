@@ -33,7 +33,7 @@ public abstract class AbstractPaginationPlugin extends PluginAdapter {
 		// add field, getter, setter for limit clause
 		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable, false,new FullyQualifiedJavaType(Long.class.getName()),"limitStart",null,true);
 		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable, false,new FullyQualifiedJavaType(Long.class.getName()),"limitEnd",null,true);
-		addLimitMethod(topLevelClass, introspectedTable);
+		addMethod_limit(topLevelClass, introspectedTable);
 		
 		// add MbgExample interface
 		topLevelClass.addImportedType(ExampleClass);
@@ -42,7 +42,7 @@ public abstract class AbstractPaginationPlugin extends PluginAdapter {
 	}
 	
 	
-	private void addLimitMethod(TopLevelClass topLevelClass,IntrospectedTable introspectedTable) {
+	private void addMethod_limit(TopLevelClass topLevelClass,IntrospectedTable introspectedTable) {
 		CommentGenerator commentGenerator = context.getCommentGenerator();
 		Method method = new Method();
 		method.setVisibility(JavaVisibility.PUBLIC);
