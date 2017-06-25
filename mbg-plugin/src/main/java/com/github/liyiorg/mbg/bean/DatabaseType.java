@@ -1,4 +1,4 @@
-package com.github.liyiorg.mbg.plugin;
+package com.github.liyiorg.mbg.bean;
 
 public enum DatabaseType {
 	

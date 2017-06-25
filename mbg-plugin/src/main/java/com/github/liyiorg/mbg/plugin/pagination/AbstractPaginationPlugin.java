@@ -9,7 +9,7 @@ import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
-import com.github.liyiorg.mbg.plugin.DatabaseType;
+import com.github.liyiorg.mbg.bean.DatabaseType;
 import com.github.liyiorg.mbg.util.TopLevelClassUtil;
 
 /**

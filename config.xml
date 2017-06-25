@@ -9,10 +9,14 @@ generatorConfiguration &gt; context
 <plugin type="com.github.liyiorg.mbg.plugin.pagination.OraclePaginationPlugin"></plugin>
 <plugin type="com.github.liyiorg.mbg.plugin.pagination.PostgreSQLPaginationPlugin"></plugin>
 
-<!-- Select column plugins -->
+
+<!-- Common Criterion plugin -->
+<plugin type="com.github.liyiorg.mbg.plugin.CommonCriterionPlugin"></plugin>
+
+<!-- Select column plugin -->
 <plugin type="com.github.liyiorg.mbg.plugin.ColumnListPlugin"></plugin>
 
-<!-- Service generator plugins -->
+<!-- Service generator plugin -->
 <plugin type="com.github.liyiorg.mbg.plugin.ServiceGeneratorPlugin"></plugin>
 
 <!-- pom.xml -->
@@ -33,7 +37,8 @@ generatorConfiguration &gt; context
 				<dependencies>
 					<!-- 
 					<dependency> 
-						<groupId>org.postgresql</groupId> 						<artifactId>postgresql</artifactId> 
+						<groupId>org.postgresql</groupId> 						
+						<artifactId>postgresql</artifactId> 
 						<version>9.3-1101-jdbc41</version>
 					</dependency> 
 					-->
