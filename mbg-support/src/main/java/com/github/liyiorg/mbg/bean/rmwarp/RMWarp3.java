@@ -1,27 +1,15 @@
 package com.github.liyiorg.mbg.bean.rmwarp;
 
-import java.util.List;
+public class RMWarp3<S, J, J1, J2, J3> extends RMWarp2<S, J, J1, J2> {
 
-public class RMWarp3<S, O, O1, O2, O3> extends RMWarp2<S, O, O1, O2> {
+	private J3 _join3;
 
-	private O3 _one3;
-
-	private List<O3> _many3;
-
-	public O3 get_one3() {
-		return _one3;
+	public J3 get_join3() {
+		return _join3;
 	}
 
-	public void set_one3(O3 _one3) {
-		this._one3 = _one3;
-	}
-
-	public List<O3> get_many3() {
-		return _many3;
-	}
-
-	public void set_many3(List<O3> _many3) {
-		this._many3 = _many3;
+	public void set_join3(J3 _join3) {
+		this._join3 = _join3;
 	}
 
 }

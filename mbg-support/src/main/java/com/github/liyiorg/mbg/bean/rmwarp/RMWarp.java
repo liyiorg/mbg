@@ -1,22 +1,18 @@
 package com.github.liyiorg.mbg.bean.rmwarp;
 
-import java.util.List;
-
 /**
  * ResultMap 复杂结果集包装
  * 
  * @author LiYi
  *
  * @param <S>
- * @param <O>
+ * @param <J>
  */
-public class RMWarp<S, O> {
+public class RMWarp<S, J> {
 
 	private S _self;
 
-	private O _one;
-
-	private List<O> _many;
+	private J _join;
 
 	private Object id, id1, id2, id3, id4, id5, id6, id7, id8, id9;
 
@@ -28,20 +24,12 @@ public class RMWarp<S, O> {
 		this._self = _self;
 	}
 
-	public O get_one() {
-		return _one;
+	public J get_join() {
+		return _join;
 	}
 
-	public void set_one(O _one) {
-		this._one = _one;
-	}
-
-	public List<O> get_many() {
-		return _many;
-	}
-
-	public void set_many(List<O> _many) {
-		this._many = _many;
+	public void set_join(J _join) {
+		this._join = _join;
 	}
 
 	public Object getId() {
