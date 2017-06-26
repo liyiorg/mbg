@@ -17,16 +17,18 @@ public class TopLevelClassUtil {
 	 * @param topLevelClass
 	 * @param introspectedTable
 	 * @param isStatic
+	 * @param isFinal
 	 * @param name 成员变量名称 
 	 * @param initializationString 初始值，可以为空
 	 * @param addGetSet 添加get set 方法
 	 */
-	public static void addField(CommentGenerator commentGenerator,TopLevelClass topLevelClass,IntrospectedTable introspectedTable,boolean isStatic,FullyQualifiedJavaType fullyQualifiedJavaType, String name,String initializationString,boolean addGetSet) {
+	public static void addField(CommentGenerator commentGenerator,TopLevelClass topLevelClass,IntrospectedTable introspectedTable,boolean isStatic,boolean isFinal,FullyQualifiedJavaType fullyQualifiedJavaType, String name,String initializationString,boolean addGetSet) {
 		Field field = new Field();
 		field.setVisibility(JavaVisibility.PROTECTED);
 		field.setType(fullyQualifiedJavaType);
 		field.setName(name);
 		field.setStatic(isStatic);
+		field.setFinal(isFinal);
 		if (initializationString != null) {
 			field.setInitializationString(initializationString);
 		}

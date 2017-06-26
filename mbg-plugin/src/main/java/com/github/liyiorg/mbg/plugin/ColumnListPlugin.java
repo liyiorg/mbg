@@ -1,6 +1,5 @@
 package com.github.liyiorg.mbg.plugin;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,9 +22,10 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 import com.github.liyiorg.mbg.util.TopLevelClassUtil;
 
 /**
- * ColumnList 适用于<br>
+ * ColumnListPlugin 适用于<br>
  *  
- * Mapper.selectByExample(Example) Mapper.selectByExampleWithBLOBs(Example)
+ * Mapper.selectByExample(Example) <br>
+ * Mapper.selectByExampleWithBLOBs(Example)
  * @author LiYi
  *
  */
@@ -57,15 +57,15 @@ public class ColumnListPlugin extends PluginAdapter {
 		topLevelClass.addImportedType("com.github.liyiorg.mbg.util.StringUtils");
 		
 		//添加静态变量 defaultBaseColumns
-		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable, true,new FullyQualifiedJavaType("Set<C>"),"defaultBaseColumns","C.group(1,2)",false);
+		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable, true,true,new FullyQualifiedJavaType("Set<C>"),"defaultBaseColumns","C.group(1,2)",false);
 		//添加成员变量 Base_Column_List
-		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable, false,new FullyQualifiedJavaType("String"),"Base_Column_List",null,true);
+		TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable, false,false,new FullyQualifiedJavaType("String"),"Base_Column_List",null,true);
 		
 		if(bLOBColumns.size()>0){
 			//添加静态变量 defaultBLOBColumns
-			TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable, true,new FullyQualifiedJavaType("Set<C>"),"defaultBLOBColumns","C.group(3)",false);
+			TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable, true,true,new FullyQualifiedJavaType("Set<C>"),"defaultBLOBColumns","C.group(3)",false);
 			//添加成员变量 Blob_Column_List
-			TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable, false,new FullyQualifiedJavaType("String"),"Blob_Column_List",null,true);
+			TopLevelClassUtil.addField(context.getCommentGenerator(),topLevelClass, introspectedTable, false,false,new FullyQualifiedJavaType("String"),"Blob_Column_List",null,true);
 		}
 		
 		
@@ -224,86 +224,78 @@ public class ColumnListPlugin extends PluginAdapter {
 		topLevelClass.addMethod(method);
 	}
 	
-	
+	@Override
+	public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element,
+			IntrospectedTable introspectedTable) {
+			builderXML(element);
+		return super.sqlMapSelectByExampleWithoutBLOBsElementGenerated(element, introspectedTable);
+	}
 
 	@Override
-	public boolean sqlMapBaseColumnListElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-		try {
-			// 获取备注
-			List<Element> comments = new ArrayList<Element>();
-			for (Element e : element.getElements()) {
-				comments.add(e);
-				if ("-->".equals(e.getFormattedContent(0))) {
-					break;
+	public boolean sqlMapSelectByExampleWithBLOBsElementGenerated(XmlElement element,
+			IntrospectedTable introspectedTable) {
+		builderXML(element);
+		return super.sqlMapSelectByExampleWithoutBLOBsElementGenerated(element, introspectedTable);
+	}
+
+	/**
+	 * 替换XML
+	 * @param element
+	 */
+	private void builderXML(XmlElement element) {
+		int base_Column_List_index = 0;
+		int blob_Column_List_index = 0;
+		List<Element> elements = element.getElements();
+		for (int i = 0; i < elements.size(); i++) {
+			Element e = element.getElements().get(i);
+			if (e instanceof XmlElement) {
+				XmlElement exml = (XmlElement) e;
+				if ("include".equals(exml.getName())) {
+					for (Attribute attribute : exml.getAttributes()) {
+						if ("refid".equals(attribute.getName()) && "Base_Column_List".equals(attribute.getValue())) {
+							base_Column_List_index = i;
+							break;
+						}
+						if ("refid".equals(attribute.getName()) && "Blob_Column_List".equals(attribute.getValue())) {
+							blob_Column_List_index = i;
+							break;
+						}
+					}
 				}
 			}
+		}
+
+		if (base_Column_List_index != 0) {
 			XmlElement when = new XmlElement("when");
 			when.addAttribute(new Attribute("test", "Base_Column_List != null"));
 			when.addElement(new TextElement("${Base_Column_List}"));
 			XmlElement otherwise = new XmlElement("otherwise");
-			for (int i = comments.size(); i < element.getElements().size(); i++) {
-				otherwise.addElement(element.getElements().get(i));
-			}
-			
+			otherwise.addElement(elements.get(base_Column_List_index));
 			XmlElement chooseXMLElement = new XmlElement("choose");
 			chooseXMLElement.addElement(when);
 			chooseXMLElement.addElement(otherwise);
-			
-			java.lang.reflect.Field field = element.getClass().getDeclaredField("elements");
-			field.setAccessible(true);
-			// 清空内部element
-			field.set(element, new ArrayList<Element>());
-			// 设置备注
-			for (Element e : comments) {
-				element.addElement(e);
-			}
-			// 设置 chooseXMLElement
-			element.addElement(chooseXMLElement);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return super.sqlMapBaseColumnListElementGenerated(element, introspectedTable);
-	}
 
-	@Override
-	public boolean sqlMapBlobColumnListElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-		try {
-			// 获取备注
-			List<Element> comments = new ArrayList<Element>();
-			for (Element e : element.getElements()) {
-				comments.add(e);
-				if ("-->".equals(e.getFormattedContent(0))) {
-					break;
-				}
-			}
+			// 替换<include refid="Base_Column_List" /> 为 <choose>
+			elements.remove(base_Column_List_index);
+			elements.add(base_Column_List_index, chooseXMLElement);
+		}
+
+		if (blob_Column_List_index != 0) {
 			XmlElement when = new XmlElement("when");
 			when.addAttribute(new Attribute("test", "Blob_Column_List != null"));
 			when.addElement(new TextElement("${Blob_Column_List}"));
 			XmlElement otherwise = new XmlElement("otherwise");
-			for (int i = comments.size(); i < element.getElements().size(); i++) {
-				otherwise.addElement(element.getElements().get(i));
-			}
-			
+			otherwise.addElement(elements.get(blob_Column_List_index));
 			XmlElement chooseXMLElement = new XmlElement("choose");
 			chooseXMLElement.addElement(when);
 			chooseXMLElement.addElement(otherwise);
-			
-			java.lang.reflect.Field field = element.getClass().getDeclaredField("elements");
-			field.setAccessible(true);
-			// 清空内部element
-			field.set(element, new ArrayList<Element>());
-			// 设置备注
-			for (Element e : comments) {
-				element.addElement(e);
-			}
-			// 设置 chooseXMLElement
-			element.addElement(chooseXMLElement);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return super.sqlMapBaseColumnListElementGenerated(element, introspectedTable);
-	}
 
+			// 替换<include refid="Blob_Column_List" /> 为 <choose>
+			elements.remove(blob_Column_List_index);
+			elements.add(blob_Column_List_index, chooseXMLElement);
+		}
+	}
+	
 	public boolean validate(List<String> warnings) {
 		return true;
 	}
