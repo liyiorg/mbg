@@ -13,7 +13,7 @@ import com.github.liyiorg.mbg.bean.DatabaseType;
 import com.github.liyiorg.mbg.util.TopLevelClassUtil;
 
 /**
- * Example 添加父类
+ * 分页插件父类
  * 
  * @author LiYi
  *

@@ -2,6 +2,11 @@ package com.github.liyiorg.mbg.support.example;
 
 import java.util.List;
 
+/**
+ * 
+ * @author LiYi
+ *
+ */
 public class Criterion {
 	
 	private String condition;

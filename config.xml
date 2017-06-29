@@ -17,7 +17,9 @@ generatorConfiguration &gt; context
 <plugin type="com.github.liyiorg.mbg.plugin.ColumnListPlugin"></plugin>
 
 <!-- Service generator plugin -->
-<plugin type="com.github.liyiorg.mbg.plugin.ServiceGeneratorPlugin"></plugin>
+<plugin type="com.github.liyiorg.mbg.plugin.ServiceGeneratorPlugin">
+	<!-- <property name="readonlyTables" value="table1,table2"/> -->
+</plugin>
 
 <!-- pom.xml -->
 <dependency>

@@ -7,6 +7,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * 
+ * @author LiYi
+ *
+ */
 public class MBGFileUtil {
 
 	private static String ROOT_PATH = System.getProperty("user.dir");

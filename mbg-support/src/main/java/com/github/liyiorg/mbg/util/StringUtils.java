@@ -3,6 +3,11 @@ package com.github.liyiorg.mbg.util;
 import java.util.Collection;
 import java.util.Iterator;
 
+/**
+ * 
+ * @author LiYi
+ *
+ */
 public abstract class StringUtils {
 
 	/**

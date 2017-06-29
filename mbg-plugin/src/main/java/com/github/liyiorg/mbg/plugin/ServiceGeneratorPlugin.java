@@ -30,6 +30,10 @@ public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 	
 	private static final String MbgBLOBsServiceClass = "com.github.liyiorg.mbg.support.service.MbgBLOBsService";
 	
+	private static final String MbgReadonlyServiceClass = "com.github.liyiorg.mbg.support.service.MbgReadonlyService";
+	
+	private static final String MbgReadonlyBLOBsServiceClass = "com.github.liyiorg.mbg.support.service.MbgReadonlyBLOBsService";
+	
 	private static final String MbgServiceSupportClass = "com.github.liyiorg.mbg.support.service.MbgServiceSupport";
 
 	@Override
@@ -43,18 +47,21 @@ public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 		if(pro_servicePackage != null){
 			servicePackage = pro_servicePackage.toString();
 		}
+		super.initialized(introspectedTable);
 	}
 
 	@Override
 	public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable) {
+		boolean blobs = introspectedTable.hasBLOBColumns();
 		String superClass;
-		List<IntrospectedColumn> list = introspectedTable.getBLOBColumns();
-		if (list != null && list.size() > 0) {
-			superClass = MbgBLOBsServiceClass;
-		} else {
-			superClass = MbgServiceClass;
+		
+		if(readonly){
+			superClass = blobs ? MbgReadonlyBLOBsServiceClass : MbgReadonlyServiceClass;
+		}else{
+			superClass = blobs ? MbgBLOBsServiceClass : MbgServiceClass;
 		}
+		
 		String baseRecordType = introspectedTable.getBaseRecordType();
 		String exampleType = introspectedTable.getExampleType();
 		List<IntrospectedColumn> columns = introspectedTable.getPrimaryKeyColumns();

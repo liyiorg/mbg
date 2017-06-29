@@ -1,5 +1,6 @@
 package com.github.liyiorg.mbg.plugin;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mybatis.generator.api.IntrospectedColumn;
@@ -9,12 +10,17 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.api.dom.xml.Attribute;
+import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.logging.Log;
 import org.mybatis.generator.logging.LogFactory;
 
 /**
- * Mapper 添加父类
+ * Mapper 父类
  * 
+ * 设置属性 readonlyTables 生成只读接口Mapper <br>
+ * 示例 <br>
+ * readonlyTables="tableName1,tableName2"
  * @author LiYi
  *
  */
@@ -22,21 +28,38 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 	
 	private static Log log = LogFactory.getLog(SuperMapperGeneratorPlugin.class);
 	
-	private static final String MbgMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgMapper";
+	private static final String MbgReadonlyBLOBsMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgReadonlyBLOBsMapper";
 	
-	private static final String MbgBLOBsMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgBLOBsMapper";
+	private static final String MbgReadonlyMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgReadonlyMapper";
 	
+	private static final String MbgUpdateBLOBsMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgUpdateBLOBsMapper";
+	
+	private static final String MbgUpdateMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgUpdateMapper";
+	
+	private static final String P_readonlyTables  = "readonlyTables";
+	
+	protected boolean readonly;
+	
+	@Override
+	public void initialized(IntrospectedTable introspectedTable) {
+		String readonlyTables = properties.getProperty(P_readonlyTables);
+		String tableName = introspectedTable.getTableConfiguration().getTableName();
+		readonly = false;
+		if(readonlyTables != null){
+			for(String rtableName : readonlyTables.split(",")){
+				if(rtableName.trim().equals(tableName)){
+					readonly = true;
+					break;
+				}
+			}
+		}
+		super.initialized(introspectedTable);
+	}
+
 	@Override
 	public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable) {
 		try {
-			String superClass;
-			List<IntrospectedColumn> list = introspectedTable.getBLOBColumns();
-			if (list != null && list.size() > 0) {
-				superClass = MbgBLOBsMapperClass;
-			} else {
-				superClass = MbgMapperClass;
-			}
 			String baseRecordType = introspectedTable.getBaseRecordType();
 			String exampleType = introspectedTable.getExampleType();
 			List<IntrospectedColumn> columns = introspectedTable.getPrimaryKeyColumns();
@@ -47,23 +70,33 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 			} else {
 				primaryKeyType = introspectedTable.getPrimaryKeyType();
 			}
-			StringBuilder stringBuilder = new StringBuilder();
-			stringBuilder.append(shortClassName(superClass))
-						.append("<")
-					 	.append(shortClassName(baseRecordType))
-					 	.append(", ")
-					 	.append(shortClassName(exampleType))
-					 	.append(", ")
-					 	.append(shortClassName(primaryKeyType))
-					 	.append(">");
-			interfaze.addImportedType(new FullyQualifiedJavaType(superClass));
+			
 			interfaze.addImportedType(new FullyQualifiedJavaType(baseRecordType));
 			interfaze.addImportedType(new FullyQualifiedJavaType(exampleType));
 			if(!primaryKeyType.startsWith("java.lang.")){
 				interfaze.addImportedType(new FullyQualifiedJavaType(primaryKeyType));
 			}
-			interfaze.addSuperInterface(new FullyQualifiedJavaType(stringBuilder.toString()));
-			log.debug("Extend Mapper " + interfaze.getType().getFullyQualifiedName() + " with " + stringBuilder.toString());
+			
+			List<String> superInterfaces = new ArrayList<String>();
+			boolean blobs = introspectedTable.hasBLOBColumns();
+			superInterfaces.add(blobs ? MbgReadonlyBLOBsMapperClass : MbgReadonlyMapperClass);
+			if(!readonly){
+				superInterfaces.add(blobs ? MbgUpdateBLOBsMapperClass : MbgUpdateMapperClass);
+			}
+			for(String superClass : superInterfaces){
+				StringBuilder stringBuilder = new StringBuilder();
+				stringBuilder.append(shortClassName(superClass))
+							.append("<")
+						 	.append(shortClassName(baseRecordType))
+						 	.append(", ")
+						 	.append(shortClassName(exampleType))
+						 	.append(", ")
+						 	.append(shortClassName(primaryKeyType))
+						 	.append(">");
+				interfaze.addImportedType(new FullyQualifiedJavaType(superClass));
+				interfaze.addSuperInterface(new FullyQualifiedJavaType(stringBuilder.toString()));
+				log.debug("Extend Mapper " + interfaze.getType().getFullyQualifiedName() + " with " + stringBuilder.toString());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -248,6 +281,117 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 	public boolean clientSelectAllMethodGenerated(Method method, TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable) {
 		return false;
+	}
+	
+	
+	
+	@Override
+	public boolean sqlMapDeleteByExampleElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+		if (readonly) {
+			return false;
+		} else {
+			return super.sqlMapDeleteByExampleElementGenerated(element, introspectedTable);
+		}
+	}
+
+	@Override
+	public boolean sqlMapDeleteByPrimaryKeyElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+		if (readonly) {
+			return false;
+		} else {
+			return super.sqlMapDeleteByPrimaryKeyElementGenerated(element, introspectedTable);
+		}
+	}
+
+	@Override
+	public boolean sqlMapInsertElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+		if (readonly) {
+			return false;
+		} else {
+			return super.sqlMapInsertElementGenerated(element, introspectedTable);
+		}
+	}
+
+	@Override
+	public boolean sqlMapUpdateByExampleSelectiveElementGenerated(XmlElement element,
+			IntrospectedTable introspectedTable) {
+		if (readonly) {
+			return false;
+		} else {
+			return super.sqlMapUpdateByExampleSelectiveElementGenerated(element, introspectedTable);
+		}
+	}
+
+	@Override
+	public boolean sqlMapUpdateByExampleWithBLOBsElementGenerated(XmlElement element,
+			IntrospectedTable introspectedTable) {
+		if (readonly) {
+			return false;
+		} else {
+			return super.sqlMapUpdateByExampleWithBLOBsElementGenerated(element, introspectedTable);
+		}
+	}
+
+	@Override
+	public boolean sqlMapUpdateByExampleWithoutBLOBsElementGenerated(XmlElement element,
+			IntrospectedTable introspectedTable) {
+		if (readonly) {
+			return false;
+		} else {
+			return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element, introspectedTable);
+		}
+	}
+
+	@Override
+	public boolean sqlMapUpdateByPrimaryKeySelectiveElementGenerated(XmlElement element,
+			IntrospectedTable introspectedTable) {
+		if (readonly) {
+			return false;
+		} else {
+			return super.sqlMapUpdateByPrimaryKeySelectiveElementGenerated(element, introspectedTable);
+		}
+	}
+
+	@Override
+	public boolean sqlMapUpdateByPrimaryKeyWithBLOBsElementGenerated(XmlElement element,
+			IntrospectedTable introspectedTable) {
+		if (readonly) {
+			return false;
+		} else {
+			return super.sqlMapUpdateByPrimaryKeyWithBLOBsElementGenerated(element, introspectedTable);
+		}
+	}
+
+	@Override
+	public boolean sqlMapUpdateByPrimaryKeyWithoutBLOBsElementGenerated(XmlElement element,
+			IntrospectedTable introspectedTable) {
+		if (readonly) {
+			return false;
+		} else {
+			return super.sqlMapUpdateByPrimaryKeyWithoutBLOBsElementGenerated(element, introspectedTable);
+		}
+	}
+
+	@Override
+	public boolean sqlMapInsertSelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+		if (readonly) {
+			return false;
+		} else {
+			return super.sqlMapInsertSelectiveElementGenerated(element, introspectedTable);
+		}
+	}
+	
+	@Override
+	public boolean sqlMapExampleWhereClauseElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+		for (Attribute attribute : element.getAttributes()) {
+			// 确定进入 Update_By_Example_Where_Clause
+			if ("id".equals(attribute.getName()) && "Update_By_Example_Where_Clause".equals(attribute.getValue())) {
+				if (readonly) {
+					return false;
+				}
+			}
+		}
+		return super.sqlMapExampleWhereClauseElementGenerated(element, introspectedTable);
 	}
 
 	public boolean validate(List<String> warnings) {

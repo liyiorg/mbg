@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Element;
@@ -14,10 +13,9 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 import com.github.liyiorg.mbg.bean.DatabaseType;
 
 /**
- * <pre>
- * add pagination using Oracle ROWNUM.
- * This class is only used in ibator code generator.
- * </pre>
+ * 
+ * @author LiYi
+ *
  */
 public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 
@@ -66,8 +64,7 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 	@Override
 	public boolean sqlMapSelectByExampleWithBLOBsElementGenerated(XmlElement element,
 			IntrospectedTable introspectedTable) {
-		List<IntrospectedColumn> list = introspectedTable.getBLOBColumns();
-		if (list != null && list.size() > 0) {
+		if (introspectedTable.hasBLOBColumns()) {
 			builderXML(element);
 		}
 		return super.sqlMapSelectByExampleWithBLOBsElementGenerated(element, introspectedTable);

@@ -5,6 +5,14 @@ import java.util.List;
 import com.github.liyiorg.mbg.bean.ModelExample;
 import com.github.liyiorg.mbg.bean.Page;
 
+/**
+ * 
+ * @author LiYi
+ *
+ * @param <Model>
+ * @param <Example>
+ * @param <PrimaryKey>
+ */
 public interface MbgService<Model, Example, PrimaryKey> {
 
 	long countByExample(Example example);

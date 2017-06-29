@@ -5,6 +5,14 @@ import java.util.List;
 import com.github.liyiorg.mbg.bean.ModelExample;
 import com.github.liyiorg.mbg.bean.Page;
 
+/**
+ * 
+ * @author LiYi
+ *
+ * @param <Model>
+ * @param <Example>
+ * @param <PrimaryKey>
+ */
 public interface MbgBLOBsService<Model, Example, PrimaryKey> extends MbgService<Model, Example, PrimaryKey> {
 
 	List<Model> selectByExampleWithBLOBs(Example example);

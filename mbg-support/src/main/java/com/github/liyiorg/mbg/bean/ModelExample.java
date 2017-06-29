@@ -2,6 +2,13 @@ package com.github.liyiorg.mbg.bean;
 
 import java.util.HashMap;
 
+/**
+ * 
+ * @author LiYi
+ *
+ * @param <Model>
+ * @param <Example>
+ */
 public class ModelExample<Model, Example> extends HashMap<String, Object>{
 
 	/**

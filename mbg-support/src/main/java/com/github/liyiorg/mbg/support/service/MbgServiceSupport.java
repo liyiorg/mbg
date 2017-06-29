@@ -1,5 +1,6 @@
 package com.github.liyiorg.mbg.support.service;
 
+import java.lang.reflect.Proxy;
 import java.util.List;
 
 import org.apache.ibatis.executor.BatchResult;
@@ -10,108 +11,159 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import com.github.liyiorg.mbg.bean.ModelExample;
 import com.github.liyiorg.mbg.bean.Page;
 import com.github.liyiorg.mbg.support.example.MbgExample;
-import com.github.liyiorg.mbg.support.mapper.MbgBLOBsMapper;
 import com.github.liyiorg.mbg.support.mapper.MbgMapper;
+import com.github.liyiorg.mbg.support.mapper.MbgReadonlyBLOBsMapper;
+import com.github.liyiorg.mbg.support.mapper.MbgReadonlyMapper;
+import com.github.liyiorg.mbg.support.mapper.MbgUpdateBLOBsMapper;
+import com.github.liyiorg.mbg.support.mapper.MbgUpdateMapper;
 import com.github.liyiorg.mbg.util.GenericsUtils;
 
+/**
+ * 
+ * @author LiYi
+ *
+ * @param <Model>
+ * @param <Example>
+ * @param <PrimaryKey>
+ */
 public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 		implements MbgBLOBsService<Model, Example, PrimaryKey> {
 
 	protected MbgMapper<Model, Example, PrimaryKey> mapper;
 
-	private MbgBLOBsMapper<Model, Example, PrimaryKey> blobsMapper;
-
 	protected SqlSessionFactory sqlSessionFactory;
 
-	private Class<?> exampleClass;
-
 	protected String mapperName;
+
+	private MbgReadonlyBLOBsMapper<Model, Example, PrimaryKey> readonlyBLOBsMapper;
+
+	private MbgReadonlyMapper<Model, Example, PrimaryKey> readonlyMapper;
+
+	private MbgUpdateMapper<Model, Example, PrimaryKey> updateMapper;
+
+	private MbgUpdateBLOBsMapper<Model, Example, PrimaryKey> updateBLOBsMapper;
+
+	private Class<?> exampleClass;
 
 	{
 		exampleClass = GenericsUtils.getSuperClassGenricType(this.getClass(), 1);
 	}
 
-	private MbgBLOBsMapper<Model, Example, PrimaryKey> blobsMapper() {
-		if (blobsMapper == null) {
-			if (mapper instanceof MbgBLOBsMapper) {
-				blobsMapper = (MbgBLOBsMapper<Model, Example, PrimaryKey>) mapper;
+	private String mapperName() {
+		if (mapperName == null) {
+			if (Proxy.isProxyClass(mapper.getClass())) {
+				mapperName = mapper.getClass().getGenericInterfaces()[0].getTypeName();
+			} else {
+				mapperName = mapper.getClass().getName();
 			}
 		}
-		return blobsMapper;
+		return mapperName;
+	}
+
+	private MbgReadonlyBLOBsMapper<Model, Example, PrimaryKey> readonlyBLOBsMapper() {
+		if (readonlyBLOBsMapper == null) {
+			if (mapper instanceof MbgReadonlyBLOBsMapper) {
+				readonlyBLOBsMapper = (MbgReadonlyBLOBsMapper<Model, Example, PrimaryKey>) mapper;
+			}
+		}
+		return readonlyBLOBsMapper;
+	}
+
+	private MbgReadonlyMapper<Model, Example, PrimaryKey> readonlyMapper() {
+		if (readonlyMapper == null) {
+			if (mapper instanceof MbgReadonlyMapper) {
+				readonlyMapper = (MbgReadonlyMapper<Model, Example, PrimaryKey>) mapper;
+			}
+		}
+		return readonlyMapper;
+	}
+
+	private MbgUpdateMapper<Model, Example, PrimaryKey> updateMapper() {
+		if (updateMapper == null) {
+			if (mapper instanceof MbgUpdateMapper) {
+				updateMapper = (MbgUpdateMapper<Model, Example, PrimaryKey>) mapper;
+			}
+		}
+		return updateMapper;
+	}
+
+	private MbgUpdateBLOBsMapper<Model, Example, PrimaryKey> updateBLOBsMapper() {
+		if (updateBLOBsMapper == null) {
+			if (mapper instanceof MbgUpdateBLOBsMapper) {
+				updateBLOBsMapper = (MbgUpdateBLOBsMapper<Model, Example, PrimaryKey>) mapper;
+			}
+		}
+		return updateBLOBsMapper;
 	}
 
 	@Override
 	public long countByExample(Example example) {
-		return mapper.countByExample(example);
+		return readonlyMapper().countByExample(example);
 	}
 
 	@Override
 	public int deleteByExample(Example example) {
-		return mapper.deleteByExample(example);
+		return updateMapper().deleteByExample(example);
 	}
 
 	@Override
 	public int deleteByPrimaryKey(PrimaryKey id) {
-		return mapper.deleteByPrimaryKey(id);
+		return updateMapper().deleteByPrimaryKey(id);
 	}
 
 	@Override
 	public int insert(Model record) {
-		return mapper.insert(record);
+		return updateMapper().insert(record);
 	}
 
 	@Override
 	public int insertSelective(Model record) {
-		return mapper.insertSelective(record);
+		return updateMapper().insertSelective(record);
 	}
 
 	@Override
 	public List<Model> selectByExampleWithBLOBs(Example example) {
-		if (blobsMapper() != null) {
-			return blobsMapper.selectByExampleWithBLOBs(example);
-		}
-		return selectByExample(example);
+		return readonlyBLOBsMapper().selectByExampleWithBLOBs(example);
 	}
 
 	@Override
 	public List<Model> selectByExample(Example example) {
-		return mapper.selectByExample(example);
+		return readonlyMapper().selectByExample(example);
 	}
 
 	@Override
 	public Model selectByPrimaryKey(PrimaryKey id) {
-		return mapper.selectByPrimaryKey(id);
+		return readonlyMapper().selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int updateByExampleSelective(Model record, Example example) {
-		return mapper.updateByExampleSelective(record, example);
+		return updateMapper().updateByExampleSelective(record, example);
 	}
 
 	@Override
 	public int updateByExampleWithBLOBs(Model record, Example example) {
-		if (blobsMapper() != null) {
-			return blobsMapper.updateByExampleWithBLOBs(record, example);
-		}
-		return updateByExample(record, example);
+		return updateBLOBsMapper().updateByExampleWithBLOBs(record, example);
 	}
 
 	@Override
 	public int updateByExample(Model record, Example example) {
-		return mapper.updateByExample(record, example);
+		return updateMapper().updateByExample(record, example);
 	}
 
 	@Override
 	public int updateByPrimaryKeySelective(Model record) {
-		return mapper.updateByPrimaryKeySelective(record);
+		return updateMapper().updateByPrimaryKeySelective(record);
 	}
 
 	@Override
 	public int updateByPrimaryKeyWithBLOBs(Model record) {
-		if (blobsMapper() != null) {
-			return blobsMapper.updateByPrimaryKeyWithBLOBs(record);
-		}
-		return updateByPrimaryKey(record);
+		return updateBLOBsMapper().updateByPrimaryKeyWithBLOBs(record);
+	}
+
+	@Override
+	public int updateByPrimaryKey(Model record) {
+		return updateMapper().updateByPrimaryKey(record);
 	}
 
 	/**
@@ -149,7 +201,7 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 				if (mapperStatement.indexOf(".") == -1) {
 					// 补充完整mapper statement名称
 					method = mapperStatement;
-					mapperStatement = mapperName + "." + mapperStatement;
+					mapperStatement = mapperName() + "." + mapperStatement;
 				} else {
 					method = mapperStatement.substring(mapperStatement.lastIndexOf(".") + 1);
 				}
@@ -212,11 +264,6 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 	}
 
 	@Override
-	public int updateByPrimaryKey(Model record) {
-		return mapper.updateByPrimaryKey(record);
-	}
-
-	@Override
 	public int[] batchDeleteByExample(Example[] example) {
 		return batchExec("deleteByExample", example);
 	}
@@ -258,18 +305,12 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 
 	@Override
 	public int[] batchUpdateByExampleWithBLOBs(ModelExample<Model, Example>[] modelExample) {
-		if (blobsMapper() != null) {
-			return batchExec("updateByExampleWithBLOBs", modelExample);
-		}
-		return batchUpdateByExample(modelExample);
+		return batchExec("updateByExampleWithBLOBs", modelExample);
 	}
 
 	@Override
 	public int[] batchUpdateByPrimaryKeyWithBLOBs(Model[] record) {
-		if (blobsMapper() != null) {
-			return batchExec("updateByPrimaryKeyWithBLOBs", record);
-		}
-		return batchUpdateByPrimaryKey(record);
+		return batchExec("updateByPrimaryKeyWithBLOBs", record);
 	}
 
 	@Override
@@ -329,6 +370,30 @@ public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
 			return new Page<Model>(list, count, page, size);
 		}
 		return null;
+	}
+
+	public MbgMapper<Model, Example, PrimaryKey> getMapper() {
+		return mapper;
+	}
+
+	public void setMapper(MbgMapper<Model, Example, PrimaryKey> mapper) {
+		this.mapper = mapper;
+	}
+
+	public SqlSessionFactory getSqlSessionFactory() {
+		return sqlSessionFactory;
+	}
+
+	public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
+		this.sqlSessionFactory = sqlSessionFactory;
+	}
+
+	public String getMapperName() {
+		return mapperName;
+	}
+
+	public void setMapperName(String mapperName) {
+		this.mapperName = mapperName;
 	}
 
 }

@@ -2,7 +2,6 @@ package com.github.liyiorg.mbg.plugin.pagination;
 
 import java.util.List;
 
-import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
@@ -11,10 +10,9 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 import com.github.liyiorg.mbg.bean.DatabaseType;
 
 /**
- * <pre>
- * add pagination using mysql limit.
- * This class is only used in ibator code generator.
- * </pre>
+ * 
+ * @author LiYi
+ *
  */
 public class MySQLPaginationPlugin extends AbstractPaginationPlugin {
 
@@ -37,8 +35,7 @@ public class MySQLPaginationPlugin extends AbstractPaginationPlugin {
 	@Override
 	public boolean sqlMapSelectByExampleWithBLOBsElementGenerated(XmlElement element,
 			IntrospectedTable introspectedTable) {
-		List<IntrospectedColumn> list = introspectedTable.getBLOBColumns();
-		if (list != null && list.size() > 0) {
+		if (introspectedTable.hasBLOBColumns()) {
 			XmlElement isNotNullElement = new XmlElement("if");
 			isNotNullElement.addAttribute(new Attribute("test", "limitStart != null"));
 			isNotNullElement.addElement(new TextElement("limit ${limitStart} , ${limitEnd}"));

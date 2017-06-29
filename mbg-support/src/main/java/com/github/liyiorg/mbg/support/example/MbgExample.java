@@ -1,5 +1,10 @@
 package com.github.liyiorg.mbg.support.example;
 
+/**
+ * 
+ * @author LiYi
+ *
+ */
 public interface MbgExample {
 
     public void setLimitStart(Long limitStart);
