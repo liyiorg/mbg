@@ -6,9 +6,9 @@ import java.util.List;
  * 
  * @author LiYi
  *
- * @param <Model>
- * @param <Example>
- * @param <PrimaryKey>
+ * @param <Model> Model
+ * @param <Example> Example
+ * @param <PrimaryKey> PrimaryKey
  */
 public interface MbgReadonlyBLOBsMapper<Model, Example, PrimaryKey> extends MbgReadonlyMapper<Model, Example, PrimaryKey> {
 

@@ -44,9 +44,6 @@ public class MySQLPaginationPlugin extends AbstractPaginationPlugin {
 		return super.sqlMapSelectByExampleWithBLOBsElementGenerated(element, introspectedTable);
 	}
 
-	/**
-	 * This plugin is always valid - no properties are required
-	 */
 	public boolean validate(List<String> warnings) {
 		return true;
 	}

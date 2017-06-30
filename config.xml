@@ -25,7 +25,7 @@ generatorConfiguration &gt; context
 <dependency>
 	<groupId>com.github.liyiorg</groupId>
 	<artifactId>mbg-support</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0-RC1</version>
 </dependency>
 
 
@@ -52,7 +52,7 @@ generatorConfiguration &gt; context
 					<dependency>
 						<groupId>com.github.liyiorg</groupId>
 						<artifactId>mbg-plugin</artifactId>
-						<version>1.0.0-SNAPSHOT</version>
+						<version>1.0.0-RC1</version>
 					</dependency>
 				</dependencies>
 			</plugin>

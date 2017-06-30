@@ -6,8 +6,8 @@ import java.util.HashMap;
  * 
  * @author LiYi
  *
- * @param <Model>
- * @param <Example>
+ * @param <Model> Model
+ * @param <Example> Example
  */
 public class ModelExample<Model, Example> extends HashMap<String, Object>{
 

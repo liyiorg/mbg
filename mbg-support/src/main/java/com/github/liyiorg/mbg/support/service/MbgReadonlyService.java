@@ -8,11 +8,11 @@ import com.github.liyiorg.mbg.bean.Page;
  * 
  * @author LiYi
  *
- * @param <Model>
- * @param <Example>
- * @param <PrimaryKey>
+ * @param <Model> Model
+ * @param <Example> Example
+ * @param <PrimaryKey> PrimaryKey
  */
-public interface MbgReadonlyService<Model, Example, PrimaryKey> {
+public interface MbgReadonlyService<Model, Example, PrimaryKey> extends MbgService<Model, Example, PrimaryKey>{
 
 	long countByExample(Example example);
 

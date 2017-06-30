@@ -18,11 +18,11 @@ public class TopLevelClassUtil {
 	
 	/**
 	 * 添加成员变量 与对应的 get set 方法
-	 * @param commentGenerator
-	 * @param topLevelClass
-	 * @param introspectedTable
-	 * @param isStatic
-	 * @param isFinal
+	 * @param commentGenerator commentGenerator
+	 * @param topLevelClass topLevelClass
+	 * @param introspectedTable introspectedTable
+	 * @param isStatic isStatic
+	 * @param isFinal isFinal
 	 * @param name 成员变量名称 
 	 * @param initializationString 初始值，可以为空
 	 * @param addGetSet 添加get set 方法

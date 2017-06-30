@@ -4,7 +4,7 @@
 	<groupId>com.github.liyiorg</groupId>
 	<artifactId>mbg</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0-RC1</version>
 	
 	
 	<name>mbg</name>

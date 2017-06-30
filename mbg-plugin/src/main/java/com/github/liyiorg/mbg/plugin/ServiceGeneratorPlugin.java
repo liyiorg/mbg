@@ -1,6 +1,7 @@
 package com.github.liyiorg.mbg.plugin;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mybatis.generator.api.IntrospectedColumn;
@@ -26,13 +27,13 @@ public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 	
 	private String servicePackage;
 	
-	private static final String MbgServiceClass = "com.github.liyiorg.mbg.support.service.MbgService";
-	
-	private static final String MbgBLOBsServiceClass = "com.github.liyiorg.mbg.support.service.MbgBLOBsService";
+	private static final String MbgReadonlyBLOBsServiceClass = "com.github.liyiorg.mbg.support.service.MbgReadonlyBLOBsService";
 	
 	private static final String MbgReadonlyServiceClass = "com.github.liyiorg.mbg.support.service.MbgReadonlyService";
 	
-	private static final String MbgReadonlyBLOBsServiceClass = "com.github.liyiorg.mbg.support.service.MbgReadonlyBLOBsService";
+	private static final String MbgUpdateBLOBsServiceClass = "com.github.liyiorg.mbg.support.service.MbgUpdateBLOBsService";
+	
+	private static final String MbgUpdateServiceClass = "com.github.liyiorg.mbg.support.service.MbgUpdateService";
 	
 	private static final String MbgServiceSupportClass = "com.github.liyiorg.mbg.support.service.MbgServiceSupport";
 
@@ -54,12 +55,10 @@ public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 	public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable) {
 		boolean blobs = introspectedTable.hasBLOBColumns();
-		String superClass;
-		
-		if(readonly){
-			superClass = blobs ? MbgReadonlyBLOBsServiceClass : MbgReadonlyServiceClass;
-		}else{
-			superClass = blobs ? MbgBLOBsServiceClass : MbgServiceClass;
+		List<String> superInterfaces = new ArrayList<String>();
+		superInterfaces.add(blobs ? MbgReadonlyBLOBsServiceClass : MbgReadonlyServiceClass);
+		if(!readonly){
+			superInterfaces.add(blobs ? MbgUpdateBLOBsServiceClass : MbgUpdateServiceClass);
 		}
 		
 		String baseRecordType = introspectedTable.getBaseRecordType();
@@ -73,8 +72,8 @@ public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 			primaryKeyType = introspectedTable.getPrimaryKeyType();
 		}
 		
-		String serviceCode = builderService(superClass, baseRecordType, exampleType, primaryKeyType);
-		String serviceCodeImpl = builderServiceImpl(superClass, baseRecordType, exampleType, primaryKeyType,spring);
+		String serviceCode = builderService(superInterfaces, baseRecordType, exampleType, primaryKeyType);
+		String serviceCodeImpl = builderServiceImpl(baseRecordType, exampleType, primaryKeyType,spring);
 		
 		String serviceFilePath = servicePackage(baseRecordType).replace(".", "/")+"/"+shortClassName(baseRecordType)+"Service.java";
 		String serviceImplFilePath = servicePackage(baseRecordType).replace(".", "/")+"/impl/"+shortClassName(baseRecordType)+"ServiceImpl.java";
@@ -110,7 +109,7 @@ public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 	 * @param primaryKeyType primaryKeyType
 	 * @return code
 	 */
-	private String builderService(String superClass,String baseRecordType,String exampleType,String primaryKeyType){
+	private String builderService(List<String> superInterfaces,String baseRecordType,String exampleType,String primaryKeyType){
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("package ").append(servicePackage(baseRecordType)).append(";").append(System.lineSeparator())
 					 .append(System.lineSeparator())
@@ -120,35 +119,41 @@ public class ServiceGeneratorPlugin extends SuperMapperGeneratorPlugin {
 		if(!langPackage(primaryKeyType)){
 			stringBuilder.append("import ").append(primaryKeyType).append(";").append(System.lineSeparator());
 		}
-		
+		for(String superClass : superInterfaces){
 		stringBuilder.append(System.lineSeparator())
 					 .append("import ").append(superClass).append(";").append(System.lineSeparator())
-					 .append(System.lineSeparator())
-					 .append("public interface ").append(shortClassName(baseRecordType)).append("Service extends ")
-					 	.append(shortClassName(superClass))
+					 .append(System.lineSeparator());
+		}
+		stringBuilder.append("public interface ").append(shortClassName(baseRecordType)).append("Service extends ");
+		for(int i = 0; i < superInterfaces.size(); i ++){
+			
+		stringBuilder.append(shortClassName(superInterfaces.get(i)))
 					 	.append("<")
 					 	.append(shortClassName(baseRecordType))
 					 	.append(", ")
 					 	.append(shortClassName(exampleType))
 					 	.append(", ")
 					 	.append(shortClassName(primaryKeyType))
-					 	.append(">")
-					 .append("{").append(System.lineSeparator())
+					 	.append(">");
+			if( i < superInterfaces.size() - 1){
+			stringBuilder.append(",");
+			}
+		}
+		stringBuilder.append("{").append(System.lineSeparator())
 					 .append(System.lineSeparator())
-			.append("}");
+					 .append("}");
 		return stringBuilder.toString();
 	}
 	
 	/**
 	 * 生成service impl 代码
-	 * @param superClass superClass
 	 * @param baseRecordType baseRecordType
 	 * @param exampleType exampleType
 	 * @param primaryKeyType primaryKeyType
 	 * @param spring spring
 	 * @return code
 	 */
-	private String builderServiceImpl(String superClass,String baseRecordType,String exampleType,String primaryKeyType,boolean spring){
+	private String builderServiceImpl(String baseRecordType,String exampleType,String primaryKeyType,boolean spring){
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("package ").append(servicePackage(baseRecordType)).append(".impl").append(";").append(System.lineSeparator())
 					 .append(System.lineSeparator());

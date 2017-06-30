@@ -22,12 +22,12 @@ import com.github.liyiorg.mbg.util.GenericsUtils;
  * 
  * @author LiYi
  *
- * @param <Model>
- * @param <Example>
- * @param <PrimaryKey>
+ * @param <Model> Model
+ * @param <Example> Example
+ * @param <PrimaryKey> PrimaryKey
  */
-public abstract class MbgServiceSupport<Model, Example, PrimaryKey>
-		implements MbgBLOBsService<Model, Example, PrimaryKey> {
+public abstract class MbgServiceSupport<Model, Example, PrimaryKey> implements
+		MbgReadonlyBLOBsService<Model, Example, PrimaryKey>, MbgUpdateBLOBsService<Model, Example, PrimaryKey> {
 
 	protected MbgMapper<Model, Example, PrimaryKey> mapper;
 

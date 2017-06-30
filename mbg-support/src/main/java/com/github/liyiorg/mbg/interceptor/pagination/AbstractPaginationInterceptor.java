@@ -116,11 +116,11 @@ public abstract class AbstractPaginationInterceptor implements Interceptor {
 	/**
 	 * 查询总记录数
 	 * 
-	 * @param totalSql
-	 * @param boundSql
-	 * @param mappedStatement
-	 * @param connection
-	 * @return
+	 * @param totalSql totalSql
+	 * @param boundSql boundSql
+	 * @param mappedStatement mappedStatement
+	 * @param connection connection
+	 * @return Long
 	 * @throws SQLException
 	 */
 	private Long queryTotal(String totalSql, BoundSql boundSql, MappedStatement mappedStatement, Connection connection)
@@ -155,9 +155,9 @@ public abstract class AbstractPaginationInterceptor implements Interceptor {
 	/**
 	 * 获取select count SQL
 	 * 
-	 * @param orgSql
-	 * @param ignoreOrderBy
-	 * @return
+	 * @param orgSql orgSql
+	 * @param ignoreOrderBy ignoreOrderBy
+	 * @return String
 	 */
 	protected String buildSelectTotalSql(String orgSql, boolean ignoreOrderBy) {
 		String newSql = orgSql;
@@ -185,8 +185,9 @@ public abstract class AbstractPaginationInterceptor implements Interceptor {
 	 * 生成分页查询语句
 	 * 
 	 * @param targetSql
-	 * @param page
-	 * @return
+	 * @param pageNo pageNo
+	 * @param pageSize pageSize
+	 * @return String
 	 */
 	protected abstract String buildSelectPagingSql(String targetSql, int pageNo, int pageSize);
 
@@ -198,8 +199,8 @@ public abstract class AbstractPaginationInterceptor implements Interceptor {
 	/**
 	 * select 语句判断
 	 * 
-	 * @param sql
-	 * @return
+	 * @param sql sql
+	 * @return boolean
 	 */
 	private static boolean isSelectSql(String sql) {
 		if (sql != null) {
@@ -213,9 +214,9 @@ public abstract class AbstractPaginationInterceptor implements Interceptor {
 		/**
 		 * 设置field 值
 		 * 
-		 * @param target
-		 * @param fieldName
-		 * @param value
+		 * @param target target
+		 * @param fieldName fieldName
+		 * @param value value
 		 * @throws IllegalAccessException
 		 */
 		protected static void writeDeclaredField(Object target, String fieldName, Object value)
@@ -234,9 +235,9 @@ public abstract class AbstractPaginationInterceptor implements Interceptor {
 		/**
 		 * 读取Field 值
 		 * 
-		 * @param target
-		 * @param fieldName
-		 * @return
+		 * @param target target
+		 * @param fieldName fieldName
+		 * @return Object
 		 * @throws IllegalAccessException
 		 */
 		protected static Object readField(Object target, String fieldName) throws IllegalAccessException {
@@ -257,9 +258,9 @@ public abstract class AbstractPaginationInterceptor implements Interceptor {
 		/**
 		 * 获取Field
 		 * 
-		 * @param cls
-		 * @param fieldName
-		 * @return
+		 * @param cls cls
+		 * @param fieldName fieldName
+		 * @return Field
 		 */
 		protected static Field getField(final Class<?> cls, String fieldName) {
 			for (Class<?> acls = cls; acls != null; acls = acls.getSuperclass()) {

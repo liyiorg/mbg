@@ -6,9 +6,9 @@ import org.apache.ibatis.annotations.Param;
  * 
  * @author LiYi
  *
- * @param <Model>
- * @param <Example>
- * @param <PrimaryKey>
+ * @param <Model> Model
+ * @param <Example> Example
+ * @param <PrimaryKey> PrimaryKey
  */
 public interface MbgUpdateBLOBsMapper<Model, Example, PrimaryKey> extends MbgUpdateMapper<Model, Example, PrimaryKey> {
 

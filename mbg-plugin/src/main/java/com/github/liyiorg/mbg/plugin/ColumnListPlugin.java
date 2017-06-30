@@ -79,11 +79,11 @@ public class ColumnListPlugin extends PluginAdapter {
 
 	/**
 	 * 添加列枚举
-	 * @param topLevelClass
-	 * @param introspectedTable
-	 * @param primaryKeyColumns
-	 * @param baseColumns
-	 * @param bLOBColumns
+	 * @param topLevelClass topLevelClass
+	 * @param introspectedTable introspectedTable
+	 * @param primaryKeyColumns primaryKeyColumns
+	 * @param baseColumns baseColumns
+	 * @param bLOBColumns bLOBColumns
 	 */
 	private void addInnerEnum_C(TopLevelClass topLevelClass, IntrospectedTable introspectedTable,
 			Set<String> primaryKeyColumns, Set<String> baseColumns, Set<String> bLOBColumns) {
@@ -240,7 +240,7 @@ public class ColumnListPlugin extends PluginAdapter {
 
 	/**
 	 * 替换XML
-	 * @param element
+	 * @param element element
 	 */
 	private void builderXML(XmlElement element) {
 		int base_Column_List_index = 0;

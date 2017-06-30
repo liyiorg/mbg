@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.github.liyiorg</groupId>
     <artifactId>mbg</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-RC1</version>
   </parent>
   <artifactId>mbg-support</artifactId>
   
@@ -12,6 +12,7 @@
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
 			<version>3.4.4</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>

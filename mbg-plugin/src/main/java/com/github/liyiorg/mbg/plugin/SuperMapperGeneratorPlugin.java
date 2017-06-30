@@ -77,8 +77,8 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 				interfaze.addImportedType(new FullyQualifiedJavaType(primaryKeyType));
 			}
 			
-			List<String> superInterfaces = new ArrayList<String>();
 			boolean blobs = introspectedTable.hasBLOBColumns();
+			List<String> superInterfaces = new ArrayList<String>();
 			superInterfaces.add(blobs ? MbgReadonlyBLOBsMapperClass : MbgReadonlyMapperClass);
 			if(!readonly){
 				superInterfaces.add(blobs ? MbgUpdateBLOBsMapperClass : MbgUpdateMapperClass);
@@ -402,7 +402,7 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 	 * 获取类simple name
 	 * 
 	 * @param fullClassName
-	 * @return
+	 * @return String
 	 */
 	protected String shortClassName(String fullClassName) {
 		if (fullClassName != null) {

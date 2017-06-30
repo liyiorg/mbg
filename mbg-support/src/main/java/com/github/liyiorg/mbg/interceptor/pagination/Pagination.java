@@ -38,7 +38,7 @@ public class Pagination {
 
 	/**
 	 * 获取总记录数，并清空分页执行状态
-	 * @return
+	 * @return long
 	 */
 	public static long total() {
 		Limit limit = threadLocal.get();
@@ -52,8 +52,8 @@ public class Pagination {
 
 	/**
 	 * 获取Page 对象，并清空分页执行状态
-	 * @param list
-	 * @return
+	 * @param list list
+	 * @return Page
 	 */
 	public static <T> Page<T> totalPage(List<T> list) {
 		Limit limit = threadLocal.get();

@@ -153,9 +153,6 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 		}
 	}
 
-	/**
-	 * This plugin is always valid - no properties are required
-	 */
 	public boolean validate(List<String> warnings) {
 		return true;
 	}
