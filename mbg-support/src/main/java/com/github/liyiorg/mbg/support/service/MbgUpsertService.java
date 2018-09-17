@@ -5,7 +5,6 @@ package com.github.liyiorg.mbg.support.service;
  * @param <Model>          Model
  * @param <ModelWithBLOBs> ModelWithBLOBs
  * @param <Example>        Example
- * @param <T>              MbgMapper
  * @author LiYi
  */
 public interface MbgUpsertService<PrimaryKey, Model, ModelWithBLOBs, Example>

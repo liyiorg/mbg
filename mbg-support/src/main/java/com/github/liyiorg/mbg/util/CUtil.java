@@ -33,7 +33,8 @@ public class CUtil {
 	 *            C
 	 * @param types
 	 *            [1,2,3]
-	 * @return Set<CInterface>
+	 * @param <E> enum           
+	 * @return Set
 	 */
 	public static <E extends Enum<E>> Set<CInterface> group(Class<E> clazz, int... types) {
 		E[] es = clazz.getEnumConstants();
@@ -55,17 +56,6 @@ public class CUtil {
 		return set;
 	}
 
-	/**
-	 * 拼接columns
-	 * 
-	 * @param coll
-	 *            Collection<C>
-	 * @param alias
-	 *            alias
-	 * @param sort
-	 *            sort
-	 * @return String
-	 */
 	public static <C extends CInterface> String joinDelimitedNames(Collection<C> coll, boolean alias, boolean sort) {
 		if (coll == null || coll.isEmpty()) {
 			return "";
@@ -94,16 +84,6 @@ public class CUtil {
 		return sb.toString();
 	}
 
-	/**
-	 * 包含的列
-	 * 
-	 * @param clazz
-	 *            C
-	 * @param columnListAble
-	 *            columnListAble
-	 * @param cs
-	 *            cs
-	 */
 	public static <E extends Enum<E>, C extends CInterface> void includeColumns(Class<E> clazz,
 			ColumnListAble columnListAble, C[] cs) {
 
@@ -144,16 +124,6 @@ public class CUtil {
 		}
 	}
 
-	/**
-	 * 排除的列
-	 * 
-	 * @param clazz
-	 *            C
-	 * @param columnListAble
-	 *            columnListAble
-	 * @param cs
-	 *            cs
-	 */
 	public static <E extends Enum<E>, C extends CInterface> void excludeColumns(Class<E> clazz,
 			ColumnListAble columnListAble, C[] cs) {
 

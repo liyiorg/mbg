@@ -7,7 +7,7 @@ public abstract class IdUtil {
 	/**
 	 * 根据参数 , 号拼接生成 key
 	 * @param keys 多个key
-	 * @return
+	 * @return id
 	 */
 	public static String sha1Id(String... keys){
 		StringBuilder stringBuilder = new StringBuilder();

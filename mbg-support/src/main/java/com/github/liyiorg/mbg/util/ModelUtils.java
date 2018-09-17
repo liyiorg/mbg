@@ -41,8 +41,8 @@ public class ModelUtils {
 	/**
 	 * 主键key 都不为空
 	 * 
-	 * @param primaryKey
-	 * @return
+	 * @param primaryKey primaryKey
+	 * @return boolean
 	 */
 	public static boolean primaryKeyFulledValues(Object primaryKey) {
 		if (primaryKey != null) {

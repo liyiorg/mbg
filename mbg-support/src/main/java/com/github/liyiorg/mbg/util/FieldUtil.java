@@ -10,7 +10,7 @@ public class FieldUtil {
 	 * @param target target
 	 * @param fieldName fieldName
 	 * @param value value
-	 * @throws IllegalAccessException
+	 * @throws IllegalAccessException IllegalAccessException
 	 */
 	public static void writeDeclaredField(Object target, String fieldName, Object value)
 			throws IllegalAccessException {
@@ -30,8 +30,8 @@ public class FieldUtil {
 	 * 
 	 * @param target target
 	 * @param fieldName fieldName
-	 * @return Object
-	 * @throws IllegalAccessException
+	 * @return Object Object
+	 * @throws IllegalAccessException IllegalAccessException
 	 */
 	public static Object readField(Object target, String fieldName) throws IllegalAccessException {
 		if (target == null) {

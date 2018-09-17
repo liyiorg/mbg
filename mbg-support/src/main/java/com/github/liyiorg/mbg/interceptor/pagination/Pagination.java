@@ -76,6 +76,7 @@ public class Pagination {
      * 获取Page 对象，并清空分页执行状态
      *
      * @param list list
+     * @param <T> list
      * @return Page
      */
     public static <T> Page<T> totalPage(List<T> list) {
