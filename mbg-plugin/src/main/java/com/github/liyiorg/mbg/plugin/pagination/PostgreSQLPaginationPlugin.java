@@ -7,8 +7,6 @@ import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
-import com.github.liyiorg.mbg.bean.DatabaseType;
-
 /**
  * 
  * @author LiYi
@@ -17,8 +15,8 @@ import com.github.liyiorg.mbg.bean.DatabaseType;
 public class PostgreSQLPaginationPlugin extends AbstractPaginationPlugin {
 
 	@Override
-	public DatabaseType getDataBaseType() {
-		return DatabaseType.PostgreSQL;
+	public String getDataBaseType() {
+		return "PostgreSQL";
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.github.liyiorg.mbg.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,135 +8,146 @@ import java.util.List;
  * @author LiYi 2010-09-26
  *
  */
-public class Page<T> {
-	// 当前页码
-	private int pageNo;
+public class Page<T> implements Serializable {
 
-	// 每页展现多少条记录
-	private int pageSize;
+    private static final long serialVersionUID = -5562537683939089397L;
 
-	// 总记录条数
-	private long total;
+    // 当前页码
+    private long pageNo;
 
-	// 当前记录条数
-	private int current;
+    // 每页展现多少条记录
+    private long pageSize;
 
-	// 总页数
-	private int totalPage;
+    // 总记录条数
+    private long total;
 
-	// 承载数据
-	private List<T> list;
+    // 当前记录条数
+    private long current;
 
-	//是否有上一页
-	private boolean hasPrev;
+    // 总页数
+    private long totalPage;
 
-	//是否有下一页
-	private boolean hasNext;
+    // 承载数据
+    private List<T> data;
 
-	//是否为第一页
-	private boolean first;
+    // 是否有上一页
+    private boolean hasPrev;
 
-	//是否为最后一页
-	private boolean last;
+    // 是否有下一页
+    private boolean hasNext;
 
-	public Page(int pageNo, int pageSize) {
-		this.pageNo = pageNo;
-		this.pageSize = pageSize;
-	}
+    // 是否为第一页
+    private boolean first;
 
-	public Page(List<T> list,long totalRecord, int page, int pageSize) {
-		this.pageNo = page;
-		if (page < 0)
-			this.pageNo = 1;
-		this.pageSize = pageSize;
-		if (pageSize < 0)
-			this.pageSize = 1;
-		this.current = list.size();
-		this.list = list;
-		this.total =totalRecord;
-		int totalPageNum = (int) this.total / this.pageSize;
-		this.totalPage = (this.total % this.pageSize > 0) ? totalPageNum + 1
-				: totalPageNum;
-		if(pageNo>totalPage){
-			pageNo = totalPage;
-		}
-		if(pageNo>1){
-			this.hasPrev = true;
-		}
-		if(pageNo<this.totalPage){
-			this.hasNext = true;
-		}
-		if(pageNo==1){
-			this.first = true;
-		}
-		if(pageNo == totalPage){
-			this.last = true;
-		}
-	}
+    // 是否为最后一页
+    private boolean last;
 
-	public int getPageNo() {
-		return pageNo;
-	}
+    // 下一条数记录的id
+    private String nextId;
 
-	public int getPageSize() {
-		return pageSize;
-	}
+    public Page(long pageNo, long pageSize) {
+        this.pageNo = pageNo;
+        this.pageSize = pageSize;
+    }
 
-	public int getTotalPage() {
-		return totalPage;
-	}
+    public Page(List<T> data, long totalRecord, long page, long pageSize) {
+        this.pageNo = page;
+        if (page < 0)
+            this.pageNo = 1;
+        this.pageSize = pageSize;
+        if (pageSize < 0)
+            this.pageSize = 1;
+        this.current = data.size();
+        this.data = data;
+        this.total = totalRecord;
+        long totalPageNum = this.total / this.pageSize;
+        this.totalPage = (this.total % this.pageSize > 0) ? totalPageNum + 1 : totalPageNum;
+        if (pageNo > totalPage) {
+            pageNo = totalPage;
+        }
+        if (pageNo > 1) {
+            this.hasPrev = true;
+        }
+        if (pageNo < this.totalPage) {
+            this.hasNext = true;
+        }
+        if (pageNo == 1) {
+            this.first = true;
+        }
+        if (pageNo == totalPage) {
+            this.last = true;
+        }
+    }
 
-	public List<T> getList() {
-		return list;
-	}
+    public long getPageNo() {
+        return pageNo;
+    }
 
-	public void setPageNo(int pageNo) {
-		this.pageNo = pageNo;
-	}
+    public long getPageSize() {
+        return pageSize;
+    }
 
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-	}
+    public long getTotalPage() {
+        return totalPage;
+    }
 
-	public long getTotal() {
-		return total;
-	}
+    public List<T> getData() {
+        return data;
+    }
 
-	public void setTotal(long total) {
-		this.total = total;
-	}
+    public void setPageNo(long pageNo) {
+        this.pageNo = pageNo;
+    }
 
-	public int getCurrent() {
-		return current;
-	}
+    public void setPageSize(long pageSize) {
+        this.pageSize = pageSize;
+    }
 
-	public void setCurrent(int current) {
-		this.current = current;
-	}
+    public long getTotal() {
+        return total;
+    }
 
-	public void setTotalPage(int totalPage) {
-		this.totalPage = totalPage;
-	}
+    public void setTotal(long total) {
+        this.total = total;
+    }
 
-	public void setList(List<T> list) {
-		this.list = list;
-	}
+    public long getCurrent() {
+        return current;
+    }
 
-	public boolean getHasPrev() {
-		return hasPrev;
-	}
+    public void setCurrent(long current) {
+        this.current = current;
+    }
 
-	public boolean getHasNext() {
-		return hasNext;
-	}
+    public void setTotalPage(long totalPage) {
+        this.totalPage = totalPage;
+    }
 
-	public boolean getFirst() {
-		return first;
-	}
+    public void setData(List<T> data) {
+        this.data = data;
+    }
 
-	public boolean getLast() {
-		return last;
-	}
+    public boolean getHasPrev() {
+        return hasPrev;
+    }
 
+    public boolean getHasNext() {
+        return hasNext;
+    }
 
+    public boolean getFirst() {
+        return first;
+    }
+
+    public boolean getLast() {
+        return last;
+    }
+
+    public String getNextId() {
+        return nextId;
+    }
+
+    public void setNextId(String nextId) {
+        this.nextId = nextId;
+    }
 }

@@ -1,5 +1,6 @@
 package com.github.liyiorg.mbg.support.example;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,8 +8,10 @@ import java.util.List;
  * @author LiYi
  *
  */
-public class Criterion {
+public class Criterion implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	private String condition;
 
     private Object value;
@@ -24,6 +27,8 @@ public class Criterion {
     private boolean listValue;
 
     private String typeHandler;
+    
+    protected String prefix;
 
     public String getCondition() {
         return condition;
@@ -57,7 +62,11 @@ public class Criterion {
         return typeHandler;
     }
 
-    public Criterion(String condition) {
+    public String getPrefix() {
+	    return prefix;
+	}
+
+	public Criterion(String condition) {
         super();
         this.condition = condition;
         this.typeHandler = null;
@@ -91,5 +100,10 @@ public class Criterion {
 
     public Criterion(String condition, Object value, Object secondValue) {
         this(condition, value, secondValue, null);
+    }
+    
+    protected Criterion prefix(String prefix) {
+        this.prefix = prefix;
+        return this;
     }
 }

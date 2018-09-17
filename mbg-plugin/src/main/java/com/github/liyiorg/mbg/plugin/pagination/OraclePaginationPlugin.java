@@ -10,8 +10,6 @@ import org.mybatis.generator.api.dom.xml.Element;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
-import com.github.liyiorg.mbg.bean.DatabaseType;
-
 /**
  * 
  * @author LiYi
@@ -20,8 +18,8 @@ import com.github.liyiorg.mbg.bean.DatabaseType;
 public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 
 	@Override
-	public DatabaseType getDataBaseType() {
-		return DatabaseType.Oracle;
+	public String getDataBaseType() {
+		return "Oracle";
 	}
 
 	@Override

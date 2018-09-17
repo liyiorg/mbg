@@ -12,15 +12,15 @@ import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.XmlElement;
+import org.mybatis.generator.internal.util.StringUtility;
 import org.mybatis.generator.logging.Log;
 import org.mybatis.generator.logging.LogFactory;
 
 /**
  * Mapper 父类
  * 
- * 设置属性 readonlyTables 生成只读接口Mapper <br>
+ * 设置属性 readonly 生成只读接口Mapper <br>
  * 示例 <br>
- * readonlyTables="tableName1,tableName2"
  * @author LiYi
  *
  */
@@ -28,49 +28,68 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 	
 	private static Log log = LogFactory.getLog(SuperMapperGeneratorPlugin.class);
 	
-	private static final String MbgReadonlyBLOBsMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgReadonlyBLOBsMapper";
+	private static final String MbgReadBLOBsMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgReadBLOBsMapper";
 	
-	private static final String MbgReadonlyMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgReadonlyMapper";
+	private static final String MbgReadMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgReadMapper";
 	
-	private static final String MbgUpdateBLOBsMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgUpdateBLOBsMapper";
+	private static final String MbgWriteBLOBsMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgWriteBLOBsMapper";
 	
-	private static final String MbgUpdateMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgUpdateMapper";
+	private static final String MbgWriteMapperClass = "com.github.liyiorg.mbg.support.mapper.MbgWriteMapper";
 	
-	private static final String P_readonlyTables  = "readonlyTables";
+	private static final String NoKeyClass = "com.github.liyiorg.mbg.support.model.NoKey";
+	
+	private static final String MapperClass = "org.apache.ibatis.annotations.Mapper";
 	
 	protected boolean readonly;
 	
 	@Override
 	public void initialized(IntrospectedTable introspectedTable) {
-		String readonlyTables = properties.getProperty(P_readonlyTables);
-		String tableName = introspectedTable.getTableConfiguration().getTableName();
-		readonly = false;
-		if(readonlyTables != null){
-			for(String rtableName : readonlyTables.split(",")){
-				if(rtableName.trim().equals(tableName)){
-					readonly = true;
-					break;
-				}
-			}
+		if ("VIEW".equalsIgnoreCase(introspectedTable.getTableType())) {
+			readonly = true;
+		} else {
+			String readonly_pro = introspectedTable.getTableConfiguration().getProperty("readonly");
+			readonly = StringUtility.isTrue(readonly_pro);
 		}
-		super.initialized(introspectedTable);
 	}
 
+	@Override
+	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		if(!introspectedTable.hasPrimaryKeyColumns()){
+			topLevelClass.addImportedType(NoKeyClass);
+			topLevelClass.addSuperInterface(new FullyQualifiedJavaType(NoKeyClass));
+		}
+		return super.modelBaseRecordClassGenerated(topLevelClass, introspectedTable);
+	}
+	
 	@Override
 	public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable) {
 		try {
+			interfaze.addImportedType(new FullyQualifiedJavaType(MapperClass));
+			interfaze.addAnnotation("@Mapper");
 			String baseRecordType = introspectedTable.getBaseRecordType();
 			String exampleType = introspectedTable.getExampleType();
-			List<IntrospectedColumn> columns = introspectedTable.getPrimaryKeyColumns();
+			
+			String baseRecordTypeWithBLOBs = introspectedTable.getRecordWithBLOBsType();
+			
+			if(baseRecordTypeWithBLOBs == null || introspectedTable.getBLOBColumns().size() <= 1){
+				baseRecordTypeWithBLOBs = baseRecordType;
+			}else{
+				interfaze.addImportedType(new FullyQualifiedJavaType(baseRecordTypeWithBLOBs));
+			}
 
 			String primaryKeyType;
-			if (columns != null && columns.size() == 1) {
-				primaryKeyType = columns.get(0).getFullyQualifiedJavaType().getFullyQualifiedName();
+			if (introspectedTable.hasPrimaryKeyColumns()) {
+				List<IntrospectedColumn> columns = introspectedTable.getPrimaryKeyColumns();
+				if (columns.size() == 1) {
+					primaryKeyType = columns.get(0).getFullyQualifiedJavaType().getFullyQualifiedName();
+				} else {
+					primaryKeyType = introspectedTable.getPrimaryKeyType();
+				}
 			} else {
-				primaryKeyType = introspectedTable.getPrimaryKeyType();
+				primaryKeyType = NoKeyClass;
 			}
-			
+
 			interfaze.addImportedType(new FullyQualifiedJavaType(baseRecordType));
 			interfaze.addImportedType(new FullyQualifiedJavaType(exampleType));
 			if(!primaryKeyType.startsWith("java.lang.")){
@@ -79,19 +98,21 @@ public class SuperMapperGeneratorPlugin extends PluginAdapter {
 			
 			boolean blobs = introspectedTable.hasBLOBColumns();
 			List<String> superInterfaces = new ArrayList<String>();
-			superInterfaces.add(blobs ? MbgReadonlyBLOBsMapperClass : MbgReadonlyMapperClass);
+			superInterfaces.add(blobs ? MbgReadBLOBsMapperClass : MbgReadMapperClass);
 			if(!readonly){
-				superInterfaces.add(blobs ? MbgUpdateBLOBsMapperClass : MbgUpdateMapperClass);
+				superInterfaces.add(blobs ? MbgWriteBLOBsMapperClass : MbgWriteMapperClass);
 			}
 			for(String superClass : superInterfaces){
 				StringBuilder stringBuilder = new StringBuilder();
 				stringBuilder.append(shortClassName(superClass))
 							.append("<")
+							.append(shortClassName(primaryKeyType))
+							.append(", ")
 						 	.append(shortClassName(baseRecordType))
 						 	.append(", ")
-						 	.append(shortClassName(exampleType))
+						 	.append(shortClassName(baseRecordTypeWithBLOBs))
 						 	.append(", ")
-						 	.append(shortClassName(primaryKeyType))
+						 	.append(shortClassName(exampleType))
 						 	.append(">");
 				interfaze.addImportedType(new FullyQualifiedJavaType(superClass));
 				interfaze.addSuperInterface(new FullyQualifiedJavaType(stringBuilder.toString()));
