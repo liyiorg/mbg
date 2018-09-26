@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.github.liyiorg</groupId>
 		<artifactId>mbg</artifactId>
-		<version>1.0.0-RC5</version>
+		<version>1.0.0-RC6</version>
 	</parent>
 	<artifactId>mbg-support</artifactId>
 

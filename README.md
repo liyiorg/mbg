@@ -11,7 +11,7 @@ mbg
 <dependency>
 	<groupId>com.github.liyiorg</groupId>
 	<artifactId>mbg-support</artifactId>
-	<version>1.0.0-RC5</version>
+	<version>1.0.0-RC6</version>
 </dependency>
 
 
@@ -37,7 +37,7 @@ mbg
 				<dependency>
 					<groupId>com.github.liyiorg</groupId>
 					<artifactId>mbg-plugin</artifactId>
-					<version>1.0.0-RC5</version>
+					<version>1.0.0-RC6</version>
 				</dependency>
 			</dependencies>
 		</plugin>

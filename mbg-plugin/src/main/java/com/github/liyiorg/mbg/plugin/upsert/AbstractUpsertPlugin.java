@@ -39,7 +39,7 @@ public abstract class AbstractUpsertPlugin extends PluginAdapter {
         }
         boolean noGeneratedKey = introspectedTable.getGeneratedKey() == null;
         canUpsert = !readonly && noGeneratedKey && introspectedTable.hasPrimaryKeyColumns();
-        if (introspectedTable.hasBLOBColumns()) {
+        if (introspectedTable.hasBLOBColumns() && introspectedTable.getBLOBColumns().size() > 1) {
             parameterType = introspectedTable.getRecordWithBLOBsType();
         } else {
             parameterType = introspectedTable.getBaseRecordType();
@@ -54,7 +54,7 @@ public abstract class AbstractUpsertPlugin extends PluginAdapter {
             String exampleType = introspectedTable.getExampleType();
 
             String baseRecordTypeWithBLOBs;
-            if (introspectedTable.hasBLOBColumns()) {
+            if (introspectedTable.hasBLOBColumns() && introspectedTable.getBLOBColumns().size() > 1) {
                 baseRecordTypeWithBLOBs = introspectedTable.getRecordWithBLOBsType();
                 interfaze.addImportedType(new FullyQualifiedJavaType(baseRecordTypeWithBLOBs));
             } else {
