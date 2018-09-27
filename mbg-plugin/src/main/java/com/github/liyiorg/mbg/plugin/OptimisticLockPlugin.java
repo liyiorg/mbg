@@ -173,7 +173,7 @@ public class OptimisticLockPlugin extends PluginAdapter {
 		XmlElement xmlElement = new XmlElement("update");
 		xmlElement.addAttribute(new Attribute("id", "updateByPrimaryKeySelectiveWithOptimisticLock"));
 		String parameterType;
-		if (introspectedTable.hasBLOBColumns()) {
+		if (introspectedTable.hasBLOBColumns() && introspectedTable.getBLOBColumns().size() > 1) {
 			parameterType = introspectedTable.getRecordWithBLOBsType();
 		} else {
 			parameterType = introspectedTable.getBaseRecordType();

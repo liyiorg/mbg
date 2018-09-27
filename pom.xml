@@ -5,7 +5,7 @@
 	<groupId>com.github.liyiorg</groupId>
 	<artifactId>mbg</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.0-RC6</version>
+	<version>1.0.0-RC7</version>
 
 	<name>mbg</name>
 	<description>MyBatis Generator Tool</description>
